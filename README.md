@@ -14,7 +14,7 @@ You need to do several steps for using google test.<br>
 - Run CMake to generate Makefiles: `cmake ..`
 - Build the project:`make`
 3. Use executable<br>
-- go to `build` directory.
+- go to build directory `cd build`
 - `./test` --> testing
 - `./main` --> main
 
