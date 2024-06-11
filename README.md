@@ -20,6 +20,6 @@ You need to do several steps for using google test.<br>
 
 
 <details>
-<summary>Deveopment Record</summary>
+<summary><h2>Deveopment Record</h2></summary>
 * 2024/06/11: Finished basic functions for hand detection. Made testing files using googleTest.
 </details>
