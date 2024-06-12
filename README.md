@@ -17,6 +17,11 @@ You need to do several steps for using google test.<br>
 - go to build directory `cd build`
 - `./test` --> testing
 - `./main` --> main
+4. Retest
+- You don't have to re-clone googleTest or make build folder.
+- After editing the test, please do the following:
+- Do `make` in `builder`
+- Run `./test`
 
 
 <details>

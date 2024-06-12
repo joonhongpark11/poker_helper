@@ -3,9 +3,9 @@
 /*---------------Array Processing Functions---------------------------------*/
 
 /*
-*  numberConversion() changes the character number to integer number.
-*  'A', which is 1 in general, is considered 14 for convenience.
-*/
+ *  numberConversion() changes the character number to integer number.
+ *  'A', which is 1 in general, is considered 14 for convenience.
+ */
 
 int numberConversion(char rank) {
     if (rank >= '2' && rank <= '9') {
@@ -18,14 +18,14 @@ int numberConversion(char rank) {
         case 'K': return 13;
         case 'A': return 14;
         default:
-                throw std::invalid_argument("Invalid character for rank");
+            throw std::invalid_argument("Invalid character for rank");
     }
 } /* numberConversion() */
 
 /*
-*  convertHandToNumbers() converts a vector of card strings to
-*  a vector of integer card values.
-*/
+ *  convertHandToNumbers() converts a vector of card strings to
+ *  a vector of integer card values.
+ */
 
 std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand) {
     std::vector<int> numbers;
@@ -38,9 +38,9 @@ std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand) {
 } /* convertHandToNumbers() */
 
 /*
-*  convertHandToSuits() converts a vector of card strings to
-*  a vector of character suit values.
-*/
+ *  convertHandToSuits() converts a vector of card strings to
+ *  a vector of character suit values.
+ */
 
 std::vector<char> convertHandToSuits(const std::vector<std::string>& hand) {
     std::vector<char> suits;
@@ -53,8 +53,8 @@ std::vector<char> convertHandToSuits(const std::vector<std::string>& hand) {
 /*---------------Hand Detection Boolean Functions---------------------------*/
 
 /*
-*  isOnePair() checks whether the hand has one pair or not.
-*/   
+ *  isOnePair() checks whether the hand has one pair or not.
+ */   
 
 bool isOnePair(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -71,8 +71,8 @@ bool isOnePair(const std::vector<std::string>& hand) {
 } /* isOnePair() */
 
 /*
-*  isTwoPairs() checks whether the hand has two pairs or not.
-*/
+ *  isTwoPairs() checks whether the hand has two pairs or not.
+ */
 
 bool isTwoPairs(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -93,8 +93,8 @@ bool isTwoPairs(const std::vector<std::string>& hand) {
 } /* isTwoPairs() */
 
 /*
-*  isThreeOfAKind() checks whether the hand has triple or not.
-*/
+ *  isThreeOfAKind() checks whether the hand has triple or not.
+ */
 
 bool isThreeOfAKind(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -111,8 +111,8 @@ bool isThreeOfAKind(const std::vector<std::string>& hand) {
 } /* isThreeOfAKind() */
 
 /*
-*  isStraight() checks whether the hand has a straight or not.
-*/
+ *  isStraight() checks whether the hand has a straight or not.
+ */
 
 bool isStraight(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -150,8 +150,8 @@ bool isStraight(const std::vector<std::string>& hand) {
 } /* isStraight() */
 
 /*
-*  isFlush() checks whether the hand has flush or not.
-*/
+ *  isFlush() checks whether the hand has flush or not.
+ */
 
 bool isFlush(const std::vector<std::string>& hand) {
     std::vector<char> suits = convertHandToSuits(hand);
@@ -166,8 +166,8 @@ bool isFlush(const std::vector<std::string>& hand) {
 } /* isFlush() */
 
 /*
-*  isFullHouse() checks whether the hand is fullhouse or not.
-*/
+ *  isFullHouse() checks whether the hand is fullhouse or not.
+ */
 
 bool isFullHouse(const std::vector<std::string>& hand) {
     if (hand.size() < 5) {
@@ -201,8 +201,8 @@ bool isFullHouse(const std::vector<std::string>& hand) {
 } /* isFullHouse() */
 
 /*
-*  isFourOfAKind() checks whether the hand has quad or not.
-*/
+ *  isFourOfAKind() checks whether the hand has quad or not.
+ */
 
 bool isFourOfAKind(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -219,15 +219,15 @@ bool isFourOfAKind(const std::vector<std::string>& hand) {
 } /* isFourOfAKind() */
 
 /*
-*  isStraightFlush() checks if the hand is both straight and flush.
-*/
+ *  isStraightFlush() checks if the hand is both straight and flush.
+ */
 bool isStraightFlush(const std::vector<std::string>& hand) {
     return isStraight(hand) && isFlush(hand);
 } /* isStraightFlush() */
 
 /*
-*  isRoyalFlush() checks if the hand is royalFlush.
-*/
+ *  isRoyalFlush() checks if the hand is royalFlush.
+ */
 
 bool isRoyalFlush(const std::vector<std::string>& hand) {
     std::vector<int> numbers = convertHandToNumbers(hand);
@@ -251,10 +251,10 @@ bool isRoyalFlush(const std::vector<std::string>& hand) {
 } /* isRoyalFlush() */
 
 /*
-*  compareHighest() compares the highest value when two hands 
-*  have the same value. If the number is still a draw,
-*  it returns 0.
-*/
+ *  compareHighest() compares the highest value when two hands 
+ *  have the same value. If the number is still a draw,
+ *  it returns 0.
+ */
 
 int compareHighest(const std::vector<std::string>& hand1,
                 const std::vector<std::string>& hand2) {
@@ -272,8 +272,8 @@ int compareHighest(const std::vector<std::string>& hand1,
 } /* compareHighest() */
 
 /*
-    *  determineHand() will determine what hand the player has.
-    */
+ *  determineHand() will determine what hand the player has.
+ */
 
 std::string determineHand(const std::vector<std::string>& hand) {
     if (isRoyalFlush(hand)) return "Royal Flush";
