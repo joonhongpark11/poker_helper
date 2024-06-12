@@ -27,6 +27,6 @@ You need to do several steps for using google test.<br>
 <details>
 <summary><h2>Development Record</h2></summary>
 
-- 2024/06/11: Finished basic functions for hand detection. Made testing files using googleTest.
+- 2024/06/11: Finished basic functions for hand detection. Made testing files using googleTest. Started working on game.cpp.
 
 </details>
