@@ -29,4 +29,9 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/11: Finished basic functions for hand detection. Made testing files using googleTest. Started working on game.cpp.
 
+- 2024/06/12: Realized that I was using class in a wrong way. Trying to fix all the functions.
+
 </details>
+
+# To-do List
+1. Write player boolean functions again. I need to receive field card and add 'hand' field together. Field + own.Hand --> hand I recieved before
