@@ -1,6 +1,27 @@
 #include "game.h"
 
 /*
+ *  playerInputLoop() will asks users how many players they want to play, and return the number.
+ */
+
+int playerInputLoop() {
+    int playerNum;
+    while (1) {
+        std::cout << PLAYER_INPUT;
+        if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
+            std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
+            break;
+        }
+        else {
+            std::cout << INVALID_PLAYER_NUMBER;
+            std::cin.clear(); // Clears the error state of cin.
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignores the rest of the current line, up to '\n' or EOF.
+        }
+    }
+    return playerNum;
+} /* playerInputLoop() */
+
+/*
  *  generateDeck() will generates a full 52 cards deck.
  */
 

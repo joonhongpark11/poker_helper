@@ -1,6 +1,6 @@
 // Poker.h
-#ifndef POKER_H
-#define POKER_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include <algorithm>
 #include <cassert>
@@ -24,6 +24,15 @@ enum class Hands {
     RoyalFlush = 10
 };
 
+/*----------------fields-------------------------------------------------*/
+std::string name;
+int coins;
+std::vector<std::string> hand;
+
+
+
+/*----------------functions-----------------------------------------------*/
+
 int numberConversion(char rank);
 std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
 std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
@@ -39,5 +48,5 @@ bool isRoyalFlush(const std::vector<std::string>& hand);
 int compareHighest(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
 std::string determineHand(const std::vector<std::string>& hand);
 
-#endif // POKER_H
+#endif // PLAYER_H
 
