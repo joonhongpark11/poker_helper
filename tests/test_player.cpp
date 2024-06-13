@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/Poker.h"
+#include "../src/Player.h"
 
 // Test numberConversion
 TEST(NumberConversionTest, ValidRanks) {
