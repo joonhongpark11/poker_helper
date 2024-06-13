@@ -1,25 +1,5 @@
 #include "game.h"
-
-/*
- *  playerInputLoop() will asks users how many players they want to play, and return the number.
- */
-
-int playerInputLoop() {
-    int playerNum;
-    while (1) {
-        std::cout << PLAYER_INPUT;
-        if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
-            std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
-            break;
-        }
-        else {
-            std::cout << INVALID_PLAYER_NUMBER;
-            std::cin.clear(); // Clears the error state of cin.
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignores the rest of the current line, up to '\n' or EOF.
-        }
-    }
-    return playerNum;
-} /* playerInputLoop() */
+#include "Player.h"
 
 /*
  *  generateDeck() will generates a full 52 cards deck.
@@ -46,33 +26,57 @@ std::vector<std::string> generateDeck() {
 } /* generateDeck() */
 
 /*
- *  pickRandomCard() picks a random card excluding cards already picked.
+ * pickRandomCard() picks a random card from 'cardsLeft' and moves it to 'cardsOnField'.
  */
-
-std::string pickRandomCard(std::vector<std::string>& cardsOnField) {
-    std::vector<std::string> deck = generateDeck();
-
+std::string pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft) {
     static std::mt19937 rdm(std::time(nullptr));  // Static to initialize seed only once
 
-    // Remove cards that are on the field
-    for (const std::string& card : cardsOnField) {
-        auto it = std::find(deck.begin(), deck.end(), card);
-        if (it != deck.end()) {
-            deck.erase(it);
-        }
+    if (!cardsLeft.empty()) {
+        std::shuffle(cardsLeft.begin(), cardsLeft.end(), rdm);
+        std::string selectedCard = cardsLeft.back();
+        cardsLeft.pop_back();
+
+        cardsOnField.push_back(selectedCard);
+        return selectedCard;
     }
 
-    std::shuffle(deck.begin(), deck.end(), rdm);
-
-    if (!deck.empty()) {
-        return deck.front();
-    }
-    return ""; // empty string when all the cards are used
+    return ""; // Return empty string when no cards are left
 } /* pickRandomCard() */
 
-/*
- *  removeFromDeck() adds a card to cardsOnField vector. 
- */
-void removeFromDeck(const std::string& card, std::vector<std::string>& cardsOnField) {
-    cardsOnField.push_back(card);
+
+int draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p) {
+    if (cardsLeft.size() < 2) {
+        return ERROR;
+    }
+
+    std::string card1 = pickRandomCard(cardsOnField, cardsLeft);
+    std::string card2 = pickRandomCard(cardsOnField, cardsLeft);
+    /*
+    p.hand.push_back(card1);
+    p.hand.push_back(card2);
+    */
+
+    return OK;
 }
+
+
+/*
+ *  playerInputLoop() will asks users how many players they want to play, and return the number.
+ */
+
+int playerInputLoop() {
+    int playerNum;
+    while (1) {
+        std::cout << PLAYER_INPUT;
+        if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
+            std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
+            break;
+        }
+        else {
+            std::cout << INVALID_PLAYER_NUMBER;
+            std::cin.clear(); // Clears the error state of cin.
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignores the rest of the current line, up to '\n' or EOF.
+        }
+    }
+    return playerNum;
+} /* playerInputLoop() */

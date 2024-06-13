@@ -1,4 +1,4 @@
-#include "PLAYER.h"
+#include "Player.h"
 
 /*---------------Array Processing Functions---------------------------------*/
 
@@ -7,7 +7,7 @@
  *  'A', which is 1 in general, is considered 14 for convenience.
  */
 
-int numberConversion(char rank) {
+int Player::numberConversion(char rank) {
     if (rank >= '2' && rank <= '9') {
         return rank - '0';  // Converts '2'-'9' to their respective integers
     }
@@ -27,11 +27,10 @@ int numberConversion(char rank) {
  *  a vector of integer card values.
  */
 
-std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand) {
+std::vector<int> Player::convertHandToNumbers(const std::vector<std::string>& hand) {
     std::vector<int> numbers;
     for (const std::string& card : hand) {
-        int number = numberConversion(card[0]);
-        assert(number != -1);
+        int number = Player::numberConversion(card[0]);
         numbers.push_back(number);
     }
     return numbers;
@@ -42,7 +41,7 @@ std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand) {
  *  a vector of character suit values.
  */
 
-std::vector<char> convertHandToSuits(const std::vector<std::string>& hand) {
+std::vector<char> Player::convertHandToSuits(const std::vector<std::string>& hand) {
     std::vector<char> suits;
     for (const std::string& card : hand) {
         suits.push_back(card[1]);
@@ -50,14 +49,28 @@ std::vector<char> convertHandToSuits(const std::vector<std::string>& hand) {
     return suits;
 } /* convertHandToSuits() */
 
+/*
+ *  makeCompleteHand() adds community cards and hole Cards.
+ */
+
+std::vector<std::string> Player::makeCompleteHand(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand;
+    completeHand.insert(completeHand.end(), communityCards.begin(), communityCards.end());
+    completeHand.insert(completeHand.end(), holeCards.begin(), holeCards.end());
+
+    return completeHand;
+} /* makeCompleteHand() */
+
 /*---------------Hand Detection Boolean Functions---------------------------*/
 
 /*
  *  isOnePair() checks whether the hand has one pair or not.
  */   
 
-bool isOnePair(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
+bool Player::isOnePair(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = Player::convertHandToNumbers(completeHand);
+    
     std::map<int, int> counts;
     for (int number : numbers) {
         counts[number]++;
@@ -74,8 +87,9 @@ bool isOnePair(const std::vector<std::string>& hand) {
  *  isTwoPairs() checks whether the hand has two pairs or not.
  */
 
-bool isTwoPairs(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
+bool Player::isTwoPairs(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     std::map<int, int> counts;
     int pairCount = 0;
     for (int number : numbers) {
@@ -96,8 +110,9 @@ bool isTwoPairs(const std::vector<std::string>& hand) {
  *  isThreeOfAKind() checks whether the hand has triple or not.
  */
 
-bool isThreeOfAKind(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
+bool Player::isThreeOfAKind(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     std::map<int, int> counts;
     for (int number : numbers) {
         counts[number]++;
@@ -114,11 +129,13 @@ bool isThreeOfAKind(const std::vector<std::string>& hand) {
  *  isStraight() checks whether the hand has a straight or not.
  */
 
-bool isStraight(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
+bool Player::isStraight(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     std::sort(numbers.begin(), numbers.end());
 
     // auto is std::vector<int>::iterator
+    // make it unique so that it doesn't count consecutive same numbers
     auto it = std::unique(numbers.begin(), numbers.end());
     // Erase the undefined elements after removing duplicates
     numbers.erase(it, numbers.end());
@@ -153,8 +170,9 @@ bool isStraight(const std::vector<std::string>& hand) {
  *  isFlush() checks whether the hand has flush or not.
  */
 
-bool isFlush(const std::vector<std::string>& hand) {
-    std::vector<char> suits = convertHandToSuits(hand);
+bool Player::isFlush(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<char> suits = convertHandToSuits(completeHand);
     std::map<char, int> counts;
     for (char suit : suits) {
         counts[suit]++;
@@ -169,12 +187,13 @@ bool isFlush(const std::vector<std::string>& hand) {
  *  isFullHouse() checks whether the hand is fullhouse or not.
  */
 
-bool isFullHouse(const std::vector<std::string>& hand) {
-    if (hand.size() < 5) {
+bool Player::isFullHouse(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    if (completeHand.size() < 5) {
         return false;
     }
 
-    std::vector<int> numbers = convertHandToNumbers(hand);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     std::map<int, int> counts;
     for (int number : numbers) {
         counts[number]++;
@@ -204,8 +223,9 @@ bool isFullHouse(const std::vector<std::string>& hand) {
  *  isFourOfAKind() checks whether the hand has quad or not.
  */
 
-bool isFourOfAKind(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
+bool Player::isFourOfAKind(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     std::map<int, int> counts;
     for (int number : numbers) {
         counts[number]++;
@@ -221,17 +241,19 @@ bool isFourOfAKind(const std::vector<std::string>& hand) {
 /*
  *  isStraightFlush() checks if the hand is both straight and flush.
  */
-bool isStraightFlush(const std::vector<std::string>& hand) {
-    return isStraight(hand) && isFlush(hand);
+bool Player::isStraightFlush(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    return isStraight(completeHand) && isFlush(completeHand);
 } /* isStraightFlush() */
 
 /*
  *  isRoyalFlush() checks if the hand is royalFlush.
  */
 
-bool isRoyalFlush(const std::vector<std::string>& hand) {
-    std::vector<int> numbers = convertHandToNumbers(hand);
-    std::vector<char> suits = convertHandToSuits(hand);
+bool Player::isRoyalFlush(const std::vector<std::string>& communityCards) {
+    std::vector<std::string> completeHand = makeCompleteHand(communityCards);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
+    std::vector<char> suits = convertHandToSuits(completeHand);
 
     std::map<char, std::vector<int>> suitToNumbers;
     for (size_t i = 0; i < numbers.size(); ++i) {
@@ -256,7 +278,7 @@ bool isRoyalFlush(const std::vector<std::string>& hand) {
  *  it returns 0.
  */
 
-int compareHighest(const std::vector<std::string>& hand1,
+int Player::compareHighest(const std::vector<std::string>& hand1,
                 const std::vector<std::string>& hand2) {
     std::vector<int> num_1 = convertHandToNumbers(hand1);
     std::vector<int> num_2 = convertHandToNumbers(hand2);
@@ -275,7 +297,7 @@ int compareHighest(const std::vector<std::string>& hand1,
  *  determineHand() will determine what hand the player has.
  */
 
-std::string determineHand(const std::vector<std::string>& hand) {
+std::string Player::determineHand(const std::vector<std::string>& hand) {
     if (isRoyalFlush(hand)) return "Royal Flush";
     if (isStraightFlush(hand)) return "Straight Flush";
     if (isFourOfAKind(hand)) return "Four of a Kind";
@@ -285,5 +307,5 @@ std::string determineHand(const std::vector<std::string>& hand) {
     if (isThreeOfAKind(hand)) return "Three of a Kind";
     if (isTwoPairs(hand)) return "Two Pairs";
     if (isOnePair(hand)) return "One Pair";
-    return "High Card";
-} /* determineHand()*/
+    return "No Match";
+} /* determineHand() */
