@@ -3,117 +3,164 @@
 
 // Test numberConversion
 TEST(NumberConversionTest, ValidRanks) {
-    EXPECT_EQ(numberConversion('2'), 2);
-    EXPECT_EQ(numberConversion('9'), 9);
-    EXPECT_EQ(numberConversion('T'), 10);
-    EXPECT_EQ(numberConversion('J'), 11);
-    EXPECT_EQ(numberConversion('Q'), 12);
-    EXPECT_EQ(numberConversion('K'), 13);
-    EXPECT_EQ(numberConversion('A'), 14);
+    EXPECT_EQ(Player::numberConversion('2'), 2);
+    EXPECT_EQ(Player::numberConversion('9'), 9);
+    EXPECT_EQ(Player::numberConversion('T'), 10);
+    EXPECT_EQ(Player::numberConversion('J'), 11);
+    EXPECT_EQ(Player::numberConversion('Q'), 12);
+    EXPECT_EQ(Player::numberConversion('K'), 13);
+    EXPECT_EQ(Player::numberConversion('A'), 14);
 }
 
 TEST(NumberConversionTest, InvalidRank) {
-    EXPECT_THROW(numberConversion('X'), std::invalid_argument);
+    EXPECT_THROW(Player::numberConversion('X'), std::invalid_argument);
 }
 
 // Test convertHandToNumbers
 TEST(ConvertHandToNumbersTest, ValidHand) {
     std::vector<std::string> hand = {"2H", "3D", "5S", "9C", "KD"};
     std::vector<int> expected = {2, 3, 5, 9, 13};
-    EXPECT_EQ(convertHandToNumbers(hand), expected);
+    EXPECT_EQ(Player::convertHandToNumbers(hand), expected);
 }
 
 // Test convertHandToSuits
 TEST(ConvertHandToSuitsTest, ValidHand) {
     std::vector<std::string> hand = {"2H", "3D", "5S", "9C", "KD"};
     std::vector<char> expected = {'H', 'D', 'S', 'C', 'D'};
-    EXPECT_EQ(convertHandToSuits(hand), expected);
+    EXPECT_EQ(Player::convertHandToSuits(hand), expected);
 }
 
 // Test isOnePair
 TEST(IsOnePairTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "2D", "5S", "9C", "KD"};
-    EXPECT_TRUE(isOnePair(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isOnePair(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "8D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"3H", "2D", "5S", "9C", "KD"};
+    EXPECT_TRUE(player.isOnePair(communityCards));
+    //false
+    communityCards = {"JH", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isOnePair(communityCards));
 }
 
 // Test isTwoPairs
 TEST(IsTwoPairsTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "2D", "5S", "5C", "KD"};
-    EXPECT_TRUE(isTwoPairs(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isTwoPairs(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"AH", "2D", "3S", "5C", "KD"};
+    EXPECT_TRUE(player.isTwoPairs(communityCards));
+    //false
+    communityCards = {"AH", "2D", "3S", "JC", "KD"};
+    EXPECT_FALSE(player.isTwoPairs(communityCards));
 }
 
 // Test isThreeOfAKind
 TEST(IsThreeOfAKindTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "2D", "2S", "9C", "KD"};
-    EXPECT_TRUE(isThreeOfAKind(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isThreeOfAKind(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"3H", "2D", "2S", "9C", "KD"};
+    EXPECT_TRUE(player.isThreeOfAKind(communityCards));
+    //false
+    communityCards = {"6H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isThreeOfAKind(communityCards));
 }
 
 // Test isStraight
 TEST(IsStraightTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "3D", "4S", "5C", "6D"};
-    EXPECT_TRUE(isStraight(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isStraight(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    
+    //true
+    std::vector<std::string> communityCards = {"AH", "3D", "4S", "5C", "6D"};
+    EXPECT_TRUE(player.isStraight(communityCards));
+    //false
+    communityCards = {"2H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isStraight(communityCards));
 }
 
 // Test isFlush
 TEST(IsFlushTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "4H", "6H", "8H", "TH"};
-    EXPECT_TRUE(isFlush(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isFlush(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"2D", "4H", "6H", "8H", "TH"};
+    EXPECT_TRUE(player.isFlush(communityCards));
+    //false
+    communityCards = {"2H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isFlush(communityCards));
 }
 
 // Test isFullHouse
 TEST(IsFullHouseTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "2D", "2S", "5C", "5D"};
-    EXPECT_TRUE(isFullHouse(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isFullHouse(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5H"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"2D", "7D", "2S", "5C", "5D"};
+    EXPECT_TRUE(player.isFullHouse(communityCards));
+    //false
+    communityCards = {"2H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isFullHouse(communityCards));
 }
 
 // Test isFourOfAKind
 TEST(IsFourOfAKindTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "2D", "2S", "2C", "KD"};
-    EXPECT_TRUE(isFourOfAKind(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isFourOfAKind(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"4H", "2D", "2S", "2C", "KD"};
+    EXPECT_TRUE(player.isFourOfAKind(communityCards));
+    //false
+    communityCards = {"2H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isFourOfAKind(communityCards));
 }
 
 // Test isStraightFlush
 TEST(IsStraightFlushTest, ValidHand) {
-    std::vector<std::string> hand = {"2H", "3H", "4H", "5H", "6H"};
-    EXPECT_TRUE(isStraightFlush(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isStraightFlush(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"2H", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"6D", "3D", "4D", "5D", "7D"};
+    EXPECT_TRUE(player.isStraightFlush(communityCards));
+    //false
+    communityCards = {"2C", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isStraightFlush(communityCards));
 }
 
 // Test isRoyalFlush
 TEST(IsRoyalFlushTest, ValidHand) {
-    std::vector<std::string> hand = {"TH", "JH", "QH", "KH", "AH"};
-    EXPECT_TRUE(isRoyalFlush(hand));
-    hand = {"2H", "3D", "5S", "9C", "KD"};
-    EXPECT_FALSE(isRoyalFlush(hand));
+    Player player = {"player1", 100};
+    std::vector<std::string> newHand = {"TH", "5D"};
+    player.setHand(newHand);
+    //true
+    std::vector<std::string> communityCards = {"JH", "QH", "KH", "AH", "2S"};
+    EXPECT_TRUE(player.isRoyalFlush(communityCards));
+    //false
+    communityCards = {"2H", "3D", "5S", "9C", "KD"};
+    EXPECT_FALSE(player.isRoyalFlush(communityCards));
 }
 
 // Test determineHand
 TEST(DetermineHandTest, ValidHands) {
-    EXPECT_EQ(determineHand({"TH", "JH", "QH", "KH", "AH"}), "Royal Flush");
-    EXPECT_EQ(determineHand({"9H", "TH", "JH", "QH", "KH"}), "Straight Flush");
-    EXPECT_EQ(determineHand({"2H", "2D", "2S", "2C", "KD"}), "Four of a Kind");
-    EXPECT_EQ(determineHand({"2H", "2D", "2S", "5C", "5D"}), "Full House");
-    EXPECT_EQ(determineHand({"2H", "4H", "6H", "8H", "TH"}), "Flush");
-    EXPECT_EQ(determineHand({"2H", "3D", "4S", "5C", "6D"}), "Straight");
-    EXPECT_EQ(determineHand({"2H", "2D", "2S", "9C", "KD"}), "Three of a Kind");
-    EXPECT_EQ(determineHand({"2H", "2D", "5S", "5C", "KD"}), "Two Pairs");
-    EXPECT_EQ(determineHand({"2H", "2D", "5S", "9C", "KD"}), "One Pair");
-    EXPECT_EQ(determineHand({"2H", "3D", "5S", "9C", "KD"}), "High Card");
+    Player player = {"player1", 100};
+    EXPECT_EQ(player.determineHand({"TH", "JH", "QH", "KH", "AH", "2D"}), "Royal Flush");
+    EXPECT_EQ(player.determineHand({"9H", "TH", "JH", "QH", "KH", "3S"}), "Straight Flush");
+    EXPECT_EQ(player.determineHand({"2H", "2D", "2S", "2C", "KD", "3S"}), "Four of a Kind");
+    EXPECT_EQ(player.determineHand({"2H", "2D", "2S", "5C", "5D", "3S"}), "Full House");
+    EXPECT_EQ(player.determineHand({"2H", "4H", "6H", "8H", "TH", "5S"}), "Flush");
+    EXPECT_EQ(player.determineHand({"2H", "3D", "4S", "5C", "6D", "AS"}), "Straight");
+    EXPECT_EQ(player.determineHand({"2H", "2D", "2S", "9C", "KD", "7C"}), "Three of a Kind");
+    EXPECT_EQ(player.determineHand({"2H", "2D", "5S", "5C", "KD", "3H"}), "Two Pairs");
+    EXPECT_EQ(player.determineHand({"2H", "2D", "5S", "9C", "KD", "7H"}), "One Pair");
+    EXPECT_EQ(player.determineHand({"2H", "3D", "5S", "9C", "KD", "AS"}), "No Match");
 }
 
 // Main function for running tests
