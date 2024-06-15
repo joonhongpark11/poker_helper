@@ -21,18 +21,37 @@ int main() {
     // Dealer position is fixed per execution
     int dealerPosition;
 
-    // game object creation per game --> should use while loop
+    //small blind
     int smallBlind = 5;
+
+    // game object creation per game --> should use while loop
     Game game = {playerNumber, smallBlind};
-    game.setCardsOnField(game.generateDeck());
     dealerPosition = game.chooseDealerPosition(game.getPlayerNumber());
-    std::cout << dealerPosition;
     std::cout << "Dealer Position is right side of " << players[dealerPosition - 1].getName() << "\n";
     std::cout << "Here is the List of the player positions.\n";
     players = game.playerSort(players, dealerPosition);
+    for (int i = 0; i < players.size(); ++i) {
+        std::cout << players[i].getName() << " ";
+    }
+    std::cout << "\n";
 
     //small blind
-    
+    players[0].betting(smallBlind, game);
+    //big blind
+    players[1].betting(smallBlind * 2, game);
+
+    // need to pick two cards
+    for (int i = 0; i < players.size(); ++i) {
+        game.drawHoleCard(players[i]);
+        std::cout << players[i].getName() << " cards: ";
+        for (std::string card : players[i].getHoleCards()) {
+            std::cout << card << " ";
+        }
+        std::cout << "\n";
+    }
+
+
+
     
     
 

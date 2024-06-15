@@ -35,6 +35,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/14: Started making the main function for the game. I need to deal with coins from now.
 
+- 2024/06/15: Finished making functions for drawing hole cards for each player. Surprised by the quality of object orientied programming.
+
 </details>
 
 # To-do List

@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Game.h"
+
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -24,6 +26,9 @@ enum class Hands {
 };
 */
 
+//forward declaration
+class Game;
+
 class Player {
 private:
     std::string name;
@@ -42,7 +47,7 @@ public:
     int getCoin() { return coin; }
     void setCoin(int coin) { this->coin = coin; }
     std::vector<std::string> getHoleCards() { return holeCards; }
-    void setHand(const std::vector<std::string>& newHand) { holeCards = newHand; }
+    void setHoleCards(const std::vector<std::string>& newHand) { holeCards = newHand; }
     int getCoinBet() { return coinBet; }
     void setCoinBet(int coin) { this->coinBet = coin; }
 
@@ -63,6 +68,7 @@ public:
     bool isStraightFlush(const std::vector<std::string>& communityCards);
     bool isRoyalFlush(const std::vector<std::string>& communityCards);
     std::string determineHand(const std::vector<std::string>& communityCards);
+    void betting(int amount, Game& game);
 };
 
 #endif // PLAYER_H
