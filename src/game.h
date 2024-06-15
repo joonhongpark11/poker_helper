@@ -3,11 +3,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Player.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <ctime>
 #include <random>
 #include <unordered_set>
 
@@ -20,10 +21,40 @@
 #define OK (1)
 #define ERROR (-1)
 
+class Game {
+private:
+    std::vector<std::string> cardsOnField;
+    std::vector<std::string> communityCards;
+    int totalCoin;
+    int playerNumber;
+    int smallBlind;
 
-// Function declaration for generateDeck
-std::vector<std::string> generateDeck();
-std::string pickRandomCard(std::vector<std::string>& cardsOnField);
+
+public:
+    //constructor
+    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind) {
+    }
+
+    //getter and setter
+    std::vector<std::string> getCardsOnField() {return cardsOnField; }
+    void setCardsOnField(std::vector<std::string> cards) {this->cardsOnField = cards; }
+    std::vector<std::string> getCommunityCards() {return communityCards; }
+    void setCommunityCards(std::vector<std::string> cards) { this->communityCards = cards; }
+    int getTotalCoin() { return totalCoin; }
+    void setTotalCoin(int coin) { this->totalCoin = coin; }
+    int getPlayerNumber() { return playerNumber; }
+    void setPlayerNumber(int players) { this->playerNumber = players; }
+    int getSmallBlind() { return smallBlind; }
+    void setSmallBlind(int coin) { this->smallBlind = coin; }
+
+    std::vector<std::string> generateDeck();
+    std::string pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft);
+    int draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p);
+    int chooseDealerPosition(int playerNumber);
+    std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
+};
+
+
 int playerInputLoop();
 
 

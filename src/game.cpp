@@ -1,11 +1,11 @@
-#include "game.h"
+#include "Game.h"
 #include "Player.h"
 
 /*
  *  generateDeck() will generates a full 52 cards deck.
  */
 
-std::vector<std::string> generateDeck() {
+std::vector<std::string> Game::generateDeck() {
     char numbers[] = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
     char suits[] = {'D', 'H', 'C', 'S'};
 
@@ -28,7 +28,7 @@ std::vector<std::string> generateDeck() {
 /*
  * pickRandomCard() picks a random card from 'cardsLeft' and moves it to 'cardsOnField'.
  */
-std::string pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft) {
+std::string Game::pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft) {
     static std::mt19937 rdm(std::time(nullptr));  // Static to initialize seed only once
 
     if (!cardsLeft.empty()) {
@@ -44,7 +44,7 @@ std::string pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<s
 } /* pickRandomCard() */
 
 
-int draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p) {
+int Game::draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p) {
     if (cardsLeft.size() < 2) {
         return ERROR;
     }
@@ -80,3 +80,40 @@ int playerInputLoop() {
     }
     return playerNum;
 } /* playerInputLoop() */
+
+/*
+ *  chooseDealerPosition() choose the initial position of the dealer.
+ */
+
+int Game::chooseDealerPosition(int playerNumber) {
+    // Static random number generator
+    // This rng will be initialized only once across multiple calls
+    static std::mt19937 rng(std::random_device{}());
+
+    // Uniform distribution from 0 to playerNumber
+    std::uniform_int_distribution<> dist(1, playerNumber + 1);
+
+    // Generate and return a random number from the distribution
+    return dist(rng);
+} /* chooseDealerPosition() */
+
+/*
+ *  playerSort() will sort the playerlist based on the dealer position.
+ */
+
+std::vector<Player> Game::playerSort(std::vector<Player>& players, int dealerPosition) {
+    std::vector<Player> temp;
+    for (int i = 0; i < dealerPosition - 1; ++i) {
+        temp.push_back(players[i]);
+    }
+    std::vector<Player> newPlayers;
+    for (int i = dealerPosition - 1; i < players.size(); ++i) {
+        newPlayers.push_back(players[i]);
+    }
+    
+    // Insert all elements of temp at the end of newPlayers
+    newPlayers.insert(newPlayers.end(), temp.begin(), temp.end());
+
+    return newPlayers;
+} /* playerSort() */
+
