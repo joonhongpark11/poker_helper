@@ -28,6 +28,7 @@ class Player {
 private:
     std::string name;
     int coin;
+    int coinBet;
     std::vector<std::string> holeCards;
 
 public:
@@ -42,6 +43,8 @@ public:
     void setCoin(int coin) { this->coin = coin; }
     std::vector<std::string> getHoleCards() { return holeCards; }
     void setHand(const std::vector<std::string>& newHand) { holeCards = newHand; }
+    int getCoinBet() { return coinBet; }
+    void setCoinBet(int coin) { this->coinBet = coin; }
 
     // Poker hand evaluation functions
     static int numberConversion(char rank);

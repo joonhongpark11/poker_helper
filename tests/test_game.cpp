@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/game.h"
+#include "../src/Game.h"
 
 // Test generateDeck
 TEST(generateDeckTest, ValidDeck) {

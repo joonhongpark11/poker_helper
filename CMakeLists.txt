@@ -14,7 +14,7 @@ add_subdirectory(googletest)
 include_directories(src)
 
 # Source files
-set(SOURCES src/main.cpp src/Player.cpp src/game.cpp)
+set(SOURCES src/main.cpp src/Player.cpp src/Game.cpp)
 
 # Add the main executable
 add_executable(main ${SOURCES})
