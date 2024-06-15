@@ -309,3 +309,14 @@ std::string Player::determineHand(const std::vector<std::string>& hand) {
     if (isOnePair(hand)) return "One Pair";
     return "No Match";
 } /* determineHand() */
+
+void Player::betting(int amount, Game& game) {
+    // add to game totalCoin
+    // change maxBetting if bigger than current
+    // add to the player betting amount
+    game.setTotalCoin(game.getTotalCoin() + amount);
+    if (amount > game.getMaxBetting()) {
+        game.setMaxBetting(amount);
+    }
+    setCoinBet(getCoinBet() + amount);
+}

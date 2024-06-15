@@ -25,36 +25,54 @@ std::vector<std::string> Game::generateDeck() {
     return deck;
 } /* generateDeck() */
 
+std::vector<std::string> Game::eraseCommon() {
+    std::vector<std::string> deck = generateDeck();
+    std::vector<std::string> fieldCards = getCardsOnField();
+
+    // Use a manual loop to iterate and remove items
+    for (int i = 0; i < deck.size(); ++i) {
+        bool found = false;
+        for (const auto& fieldCard : fieldCards) {
+            if (deck[i] == fieldCard) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            deck.erase(deck.begin() + i);
+            i--;  // Decrement index to adjust for the shift in elements
+        }
+    }
+    return deck;
+}
+
 /*
  * pickRandomCard() picks a random card from 'cardsLeft' and moves it to 'cardsOnField'.
  */
-std::string Game::pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft) {
+std::string Game::pickRandomCard() {
+    std::vector<std::string> currentDeck = eraseCommon();
+
     static std::mt19937 rdm(std::time(nullptr));  // Static to initialize seed only once
 
-    if (!cardsLeft.empty()) {
-        std::shuffle(cardsLeft.begin(), cardsLeft.end(), rdm);
-        std::string selectedCard = cardsLeft.back();
-        cardsLeft.pop_back();
+    if (!currentDeck.empty()) {
+        std::shuffle(currentDeck.begin(), currentDeck.end(), rdm);
+        std::string selectedCard = currentDeck.back();
 
-        cardsOnField.push_back(selectedCard);
+        std::vector<std::string> fieldCards = getCardsOnField();
+        fieldCards.push_back(selectedCard);
+        setCardsOnField(fieldCards);
+
         return selectedCard;
     }
 
     return ""; // Return empty string when no cards are left
-} /* pickRandomCard() */
+}
 
 
-int Game::draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p) {
-    if (cardsLeft.size() < 2) {
-        return ERROR;
-    }
-
-    std::string card1 = pickRandomCard(cardsOnField, cardsLeft);
-    std::string card2 = pickRandomCard(cardsOnField, cardsLeft);
-    /*
-    p.hand.push_back(card1);
-    p.hand.push_back(card2);
-    */
+int Game::drawHoleCard(Player& p) {
+    std::string card1 = pickRandomCard();
+    std::string card2 = pickRandomCard();
+    p.setHoleCards({card1, card2});
 
     return OK;
 }

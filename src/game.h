@@ -21,6 +21,9 @@
 #define OK (1)
 #define ERROR (-1)
 
+//forward declaration
+class Player;
+
 class Game {
 private:
     std::vector<std::string> cardsOnField;
@@ -28,6 +31,7 @@ private:
     int totalCoin;
     int playerNumber;
     int smallBlind;
+    int maxBetting;
 
 
 public:
@@ -46,10 +50,14 @@ public:
     void setPlayerNumber(int players) { this->playerNumber = players; }
     int getSmallBlind() { return smallBlind; }
     void setSmallBlind(int coin) { this->smallBlind = coin; }
+    int getMaxBetting() { return maxBetting; }
+    void setMaxBetting(int bet) { this->maxBetting = bet; }
 
+
+    std::vector<std::string> eraseCommon();
     std::vector<std::string> generateDeck();
-    std::string pickRandomCard(std::vector<std::string>& cardsOnField, std::vector<std::string>& cardsLeft);
-    int draw(std::vector<std::string>& cardsLeft, std::vector<std::string>& cardsOnField, Player& p);
+    std::string pickRandomCard();
+    int drawHoleCard(Player& p);
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
 };
