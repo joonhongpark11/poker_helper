@@ -135,3 +135,24 @@ std::vector<Player> Game::playerSort(std::vector<Player>& players, int dealerPos
     return newPlayers;
 } /* playerSort() */
 
+
+void Game::checkGameStat(std::vector<Player>& players) {
+    std::cout << "Game stats:\n";
+    std::cout << "playerNumber: " << getPlayerNumber() << "\n";
+    std::cout << "totalCoin: " << getTotalCoin() << "\n";
+    std::cout << "smallBlind: " << getSmallBlind() << "\n";
+    std::cout << "maxBetting: " << getMaxBetting() << "\n";
+
+    std::cout << "Player Stats:\n";
+    for (auto player : players) {
+        std::cout << player.getName() << ":\n";
+        std::cout << "coin: " << player.getCoin() << ", ";
+        std::cout << "coinBet: " << player.getCoinBet() << ", ";
+        std::cout << "holeCards: ";
+        for (auto card : player.getHoleCards()) {
+            std::cout << card << " ";
+        }
+        std:: cout << ", ";
+        std::cout << "checks: " << player.getCheck() << "\n";
+    }
+}

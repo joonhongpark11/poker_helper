@@ -32,11 +32,11 @@ private:
     int playerNumber;
     int smallBlind;
     int maxBetting;
-
+    bool hasBet;
 
 public:
     //constructor
-    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind) {
+    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false) {
     }
 
     //getter and setter
@@ -52,6 +52,9 @@ public:
     void setSmallBlind(int coin) { this->smallBlind = coin; }
     int getMaxBetting() { return maxBetting; }
     void setMaxBetting(int bet) { this->maxBetting = bet; }
+    bool getHasBet() { return hasBet; }
+    void setHasBet(bool bet) { this->hasBet = bet; }
+
 
 
     std::vector<std::string> eraseCommon();
@@ -60,6 +63,7 @@ public:
     int drawHoleCard(Player& p);
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
+    void checkGameStat(std::vector<Player>& players);
 };
 
 

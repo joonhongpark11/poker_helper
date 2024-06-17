@@ -35,12 +35,16 @@ private:
     int coin;
     int coinBet;
     std::vector<std::string> holeCards;
+    bool check;
 
 public:
     // constructor
-    Player(const std::string& name, int coin) : name(name), coin(coin) {
+    Player(const std::string& name, int coin)
+    : name(name), coin(coin), check(true) {
         // 'holeCards' is automatically initialized to an empty vector
+        // All checks are initialized to true
     }
+
 
     // Getters and setters
     std::string getName() { return name; }
@@ -50,6 +54,10 @@ public:
     void setHoleCards(const std::vector<std::string>& newHand) { holeCards = newHand; }
     int getCoinBet() { return coinBet; }
     void setCoinBet(int coin) { this->coinBet = coin; }
+    bool getCheck() { return check; }
+    void setCheck(bool check) { this->check = check; }
+
+    
 
     // Poker hand evaluation functions
     static int numberConversion(char rank);
@@ -69,6 +77,8 @@ public:
     bool isRoyalFlush(const std::vector<std::string>& communityCards);
     std::string determineHand(const std::vector<std::string>& communityCards);
     void betting(int amount, Game& game);
+    int chooseAction();
+    void doAction(int action, Game& game);
 };
 
 #endif // PLAYER_H

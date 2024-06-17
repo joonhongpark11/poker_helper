@@ -49,8 +49,12 @@ int main() {
         }
         std::cout << "\n";
     }
-
-
+    
+    // need to do first bet
+    for (auto& player: players) {
+        player.doAction(player.chooseAction(), game);
+    }
+    game.checkGameStat(players);
 
     
     
