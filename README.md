@@ -37,6 +37,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/15: Finished making functions for drawing hole cards for each player. Surprised by the quality of object orientied programming.
 
+- 2024/06/16: Working on choosing the player's action. I need to study more about actions like raise, call, bet.
+
 </details>
 
 # To-do List

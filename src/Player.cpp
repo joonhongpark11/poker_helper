@@ -310,13 +310,64 @@ std::string Player::determineHand(const std::vector<std::string>& hand) {
     return "No Match";
 } /* determineHand() */
 
+/*
+ *  betting() makes betting for the player.
+ */
+
 void Player::betting(int amount, Game& game) {
     // add to game totalCoin
     // change maxBetting if bigger than current
     // add to the player betting amount
+    // need to remove the amount from the player's coin
     game.setTotalCoin(game.getTotalCoin() + amount);
     if (amount > game.getMaxBetting()) {
         game.setMaxBetting(amount);
     }
     setCoinBet(getCoinBet() + amount);
+    setCoin(getCoin() - amount);
+} /* betting() */
+
+/*
+ *  chooseAction() will choose what action to choose in the current round.
+ */
+int Player::chooseAction() {
+    // for now, I will choose randomly
+    // after making statistical tool, this choice will be based on statistical result
+    static std::mt19937 rng(std::random_device{}());
+
+    // Uniform disstribution from 0 to playerNumber
+    std::uniform_int_distribution<> dist(1, 3);
+
+    // Generate and return a random number from the distribution
+    return dist(rng);
+} /* chooseAction() */
+
+/*
+ *  doAction() 
+ */
+
+void Player::doAction(int action, Game& game) {
+    int amount; // Declare outside to avoid bypass
+    switch (action) {
+        case 1: // check or call
+            if (game.getHasBet()) {
+                int amountToCall = game.getMaxBetting() - getCoinBet();
+                betting(amountToCall, game);
+                std::cout << getName() << ": call. " << amountToCall << " more \n";
+            } else {
+                std::cout << getName() << ": check\n";
+            }
+            break;
+        case 2: // bet or raise
+            amount = 10;
+            betting(amount, game);
+            std::cout << getName() << ": bet " << amount << "\n";
+            break;
+        case 3: // fold
+            setCheck(false);
+            std::cout << getName() << ": fold\n";
+            break;
+        default:
+            throw std::invalid_argument("Invalid Action code received.");
+    }
 }
