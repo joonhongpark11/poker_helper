@@ -39,6 +39,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/16: Working on choosing the player's action. I need to study more about actions like raise, call, bet.
 
+- 2024/06/17: realized that player's actions are complicated and very case dependent, so I need to divide into a lot of cases. I am currently finalizing the poker game, and will start fixing the actions. 
+
 </details>
 
 # To-do List

@@ -35,12 +35,12 @@ private:
     int coin;
     int coinBet;
     std::vector<std::string> holeCards;
-    bool check;
+    bool fold;
 
 public:
     // constructor
     Player(const std::string& name, int coin)
-    : name(name), coin(coin), check(true) {
+    : name(name), coin(coin), fold(false) {
         // 'holeCards' is automatically initialized to an empty vector
         // All checks are initialized to true
     }
@@ -54,8 +54,8 @@ public:
     void setHoleCards(const std::vector<std::string>& newHand) { holeCards = newHand; }
     int getCoinBet() { return coinBet; }
     void setCoinBet(int coin) { this->coinBet = coin; }
-    bool getCheck() { return check; }
-    void setCheck(bool check) { this->check = check; }
+    bool getFold() { return fold; }
+    void setFold(bool isFold) { this->fold = isFold; }
 
     
 
