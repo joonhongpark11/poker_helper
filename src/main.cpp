@@ -51,10 +51,44 @@ int main() {
     }
     
     // need to do first bet
-    for (auto& player: players) {
-        player.doAction(player.chooseAction(), game);
+   int round = 1;
+bool onlyOnePlayer = false;
+
+while ((round < 5) && (game.getCheck() > 1)) {
+    std::cout << "round: " << round << "\n";
+    
+    // Directly use the players vector to ensure changes affect the game state
+    for (auto it = players.begin(); it != players.end();) {
+        it->doAction(it->chooseAction(), game); // Perform action based on player choice
+        
+        if (it->getFold()) {
+            // Erase the player and update the iterator to the next element
+            it = players.erase(it);
+        } else {
+            ++it;  // Move to the next element
+        }
+        
+        // Check if there is only one player left who hasn't folded
+        if (game.getCheck() <= 1) {
+            onlyOnePlayer = true;
+            std::cout << "only one player left.\n";
+            break;
+        }
     }
+    
+    if (onlyOnePlayer) {
+        break;  // Exit the outer loop if only one player is left
+    }
+    
+    // Check and update game state with the current set of players
     game.checkGameStat(players);
+    round++;
+}
+
+    if (!onlyOnePlayer) {
+        
+    }
+
 
     
     

@@ -33,10 +33,11 @@ private:
     int smallBlind;
     int maxBetting;
     bool hasBet;
+    int check;
 
 public:
     //constructor
-    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false) {
+    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false), check(players) {
     }
 
     //getter and setter
@@ -54,6 +55,8 @@ public:
     void setMaxBetting(int bet) { this->maxBetting = bet; }
     bool getHasBet() { return hasBet; }
     void setHasBet(bool bet) { this->hasBet = bet; }
+    int getCheck() { return check; }
+    void setCheck(int check) { this->check = check; }
 
 
 
@@ -64,6 +67,7 @@ public:
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
+    std::optional<Player> Game::determineWinner(std::vector<Player>& players);
 };
 
 

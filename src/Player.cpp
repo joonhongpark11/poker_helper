@@ -333,13 +333,16 @@ void Player::betting(int amount, Game& game) {
 int Player::chooseAction() {
     // for now, I will choose randomly
     // after making statistical tool, this choice will be based on statistical result
-    static std::mt19937 rng(std::random_device{}());
+    static std::mt19937 rng(std::random_device{}());  // Random number generator
 
-    // Uniform disstribution from 0 to playerNumber
-    std::uniform_int_distribution<> dist(1, 3);
+    // Uniform distribution from 0 to 99 (100 possibilities)
+    std::uniform_int_distribution<> dist(0, 99);
 
-    // Generate and return a random number from the distribution
-    return dist(rng);
+    // Generate a random number from the distribution
+    int randomNumber = dist(rng);
+
+    // Return 1 if the number is less than 80 (80% chance), else return 2
+    return randomNumber < 80 ? 1 : 2;
 } /* chooseAction() */
 
 /*
@@ -349,22 +352,16 @@ int Player::chooseAction() {
 void Player::doAction(int action, Game& game) {
     int amount; // Declare outside to avoid bypass
     switch (action) {
-        case 1: // check or call
-            if (game.getHasBet()) {
-                int amountToCall = game.getMaxBetting() - getCoinBet();
-                betting(amountToCall, game);
-                std::cout << getName() << ": call. " << amountToCall << " more \n";
-            } else {
-                std::cout << getName() << ": check\n";
+        case 1: // check
+            if (getCoinBet() < game.getMaxBetting()) {
+                amount = game.getMaxBetting() - getCoinBet();
+                betting(amount, game);
             }
+            std::cout << getName() << ": check\n";
             break;
-        case 2: // bet or raise
-            amount = 10;
-            betting(amount, game);
-            std::cout << getName() << ": bet " << amount << "\n";
-            break;
-        case 3: // fold
-            setCheck(false);
+        case 2: // fold
+            setFold(true);
+            game.setCheck(game.getCheck() - 1);
             std::cout << getName() << ": fold\n";
             break;
         default:

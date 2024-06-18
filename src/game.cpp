@@ -153,6 +153,11 @@ void Game::checkGameStat(std::vector<Player>& players) {
             std::cout << card << " ";
         }
         std:: cout << ", ";
-        std::cout << "checks: " << player.getCheck() << "\n";
+        std::cout << "Fold: " << player.getFold() << "\n";
     }
+    std::cout << "Checks: " << getCheck() << "\n";
+}
+
+std::optional<Player> Game::determineWinner(std::vector<Player>& players) {
+    return std::nullopt;
 }
