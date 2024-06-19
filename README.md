@@ -41,6 +41,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/17: realized that player's actions are complicated and very case dependent, so I need to divide into a lot of cases. I am currently finalizing the poker game, and will start fixing the actions. 
 
+- 2024/06/18: Finished making the frame of the program. I need to edit the details from now. It seems like determining the hand is also wrong. I need to fix it.
+
 </details>
 
 # To-do List

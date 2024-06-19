@@ -297,18 +297,34 @@ int Player::compareHighest(const std::vector<std::string>& hand1,
  *  determineHand() will determine what hand the player has.
  */
 
-std::string Player::determineHand(const std::vector<std::string>& hand) {
-    if (isRoyalFlush(hand)) return "Royal Flush";
-    if (isStraightFlush(hand)) return "Straight Flush";
-    if (isFourOfAKind(hand)) return "Four of a Kind";
-    if (isFullHouse(hand)) return "Full House";
-    if (isFlush(hand)) return "Flush";
-    if (isStraight(hand)) return "Straight";
-    if (isThreeOfAKind(hand)) return "Three of a Kind";
-    if (isTwoPairs(hand)) return "Two Pairs";
-    if (isOnePair(hand)) return "One Pair";
-    return "No Match";
+Hands Player::determineHand(const std::vector<std::string>& hand) {
+    if (isRoyalFlush(hand)) return Hands::RoyalFlush;
+    if (isStraightFlush(hand)) return Hands::StraightFlush;
+    if (isFourOfAKind(hand)) return Hands::FourOfAKind;
+    if (isFullHouse(hand)) return Hands::FullHouse;
+    if (isFlush(hand)) return Hands::Flush;
+    if (isStraight(hand)) return Hands::Straight;
+    if (isThreeOfAKind(hand)) return Hands::ThreeOfAKind;
+    if (isTwoPairs(hand)) return Hands::TwoPairs;
+    if (isOnePair(hand)) return Hands::OnePair;
+    return Hands::NoMatch;
 } /* determineHand() */
+
+std::string Player::handsToString(Hands hand) {
+    switch(hand) {
+        case Hands::NoMatch: return "NoMatch";
+        case Hands::OnePair: return "OnePair";
+        case Hands::TwoPairs: return "TwoPairs";
+        case Hands::ThreeOfAKind: return "ThreeOfAKind";
+        case Hands::Straight: return "Straight";
+        case Hands::Flush: return "Flush";
+        case Hands::FullHouse: return "FullHouse";
+        case Hands::FourOfAKind: return "FourOfAKind";
+        case Hands::StraightFlush: return "StraightFlush";
+        case Hands::RoyalFlush: return "RoyalFlush";
+        default: return "Unknown";
+    }
+}
 
 /*
  *  betting() makes betting for the player.
