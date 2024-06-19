@@ -37,7 +37,7 @@ private:
 
 public:
     //constructor
-    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false), check(players) {
+    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false), check(players + 1) {
     }
 
     //getter and setter
@@ -67,7 +67,7 @@ public:
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
-    std::optional<Player> Game::determineWinner(std::vector<Player>& players);
+    std::optional<Player> determineWinner(std::vector<Player>& players);
 };
 
 

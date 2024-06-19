@@ -55,7 +55,31 @@ int main() {
 bool onlyOnePlayer = false;
 
 while ((round < 5) && (game.getCheck() > 1)) {
+
     std::cout << "round: " << round << "\n";
+
+    // draw three cards
+    if (round == 2) {
+        std::vector<std::string> initialSet;
+        for (int i = 0; i < 3; ++i) {
+            initialSet.push_back(game.pickRandomCard());
+        }
+        game.setCommunityCards(initialSet);
+        std::cout << "community cards: ";
+        for (auto cards : game.getCommunityCards()) {
+            std::cout << cards << " ";
+        }
+        std::cout << "\n";
+    }
+    else if (round == 3 || round == 4) {
+        std::vector<std::string> newSet = game.getCommunityCards();
+        newSet.push_back(game.pickRandomCard());
+        game.setCommunityCards(newSet);
+        for (auto cards : game.getCommunityCards()) {
+            std::cout << cards << " ";
+        }
+        std::cout << "\n";
+    }
     
     // Directly use the players vector to ensure changes affect the game state
     for (auto it = players.begin(); it != players.end();) {
@@ -84,10 +108,25 @@ while ((round < 5) && (game.getCheck() > 1)) {
     game.checkGameStat(players);
     round++;
 }
-
+    std::vector<Player> winners;
+    Hands bestHand = Hands::NoMatch;
     if (!onlyOnePlayer) {
-        
+        for (auto it = players.begin(); it != players.end(); ++it) {
+            Hands thisHand = it->determineHand(it->makeCompleteHand(game.getCommunityCards()));
+            if (thisHand > bestHand) {
+                winners.clear();
+                winners.push_back(*it);
+                bestHand = thisHand;
+            } else if (thisHand == bestHand) {
+                winners.push_back(*it);
+            }
+        }
     }
+
+    if (winners.size() == 1) {
+        std::cout << "The winner is: " << winners[0].getName() << " with hand: " << winners[0].handsToString(bestHand) << "\n";
+    }
+
 
 
     

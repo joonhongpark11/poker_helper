@@ -10,7 +10,6 @@
 #include <iostream>
 #include <map>
 
-/* maybe use later
 enum class Hands {
     NoMatch = 0,
     HighCard = 1,
@@ -24,7 +23,7 @@ enum class Hands {
     StraightFlush = 9,
     RoyalFlush = 10
 };
-*/
+
 
 //forward declaration
 class Game;
@@ -75,10 +74,11 @@ public:
     bool isFourOfAKind(const std::vector<std::string>& communityCards);
     bool isStraightFlush(const std::vector<std::string>& communityCards);
     bool isRoyalFlush(const std::vector<std::string>& communityCards);
-    std::string determineHand(const std::vector<std::string>& communityCards);
+    Hands determineHand(const std::vector<std::string>& communityCards);
     void betting(int amount, Game& game);
     int chooseAction();
     void doAction(int action, Game& game);
+    std::string handsToString(Hands hand);
 };
 
 #endif // PLAYER_H
