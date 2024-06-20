@@ -43,6 +43,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/18: Finished making the frame of the program. I need to edit the details from now. It seems like determining the hand is also wrong. I need to fix it.
 
+- 2024/06/19: I tested several things, but I got a lot of errors. I think I need to check everything from the beginning. I started rewriting the test cases and fixing functions.
+
 </details>
 
 # To-do List

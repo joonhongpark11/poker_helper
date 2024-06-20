@@ -14,7 +14,7 @@ enum class Hands {
     NoMatch = 0,
     HighCard = 1,
     OnePair = 2,
-    TwoPairs = 3,
+    TwoPair = 3,
     ThreeOfAKind = 4,
     Straight = 5,
     Flush = 6,
@@ -59,14 +59,14 @@ public:
     
 
     // Poker hand evaluation functions
-    static int numberConversion(char rank);
+    static int convertNumbers(char rank);
     static std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
     static std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
     static int compareHighest(const std::vector<std::string>& hand1,
                               const std::vector<std::string>& hand2);
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);                          
     bool isOnePair(const std::vector<std::string>& communityCards);
-    bool isTwoPairs(const std::vector<std::string>& communityCards);
+    bool isTwoPair(const std::vector<std::string>& communityCards);
     bool isThreeOfAKind(const std::vector<std::string>& communityCards);
     bool isStraight(const std::vector<std::string>& communityCards);
     bool isFlush(const std::vector<std::string>& communityCards);
