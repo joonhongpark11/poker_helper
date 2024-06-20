@@ -111,18 +111,25 @@ while ((round < 5) && (game.getCheck() > 1)) {
     std::vector<Player> winners;
     Hands bestHand = Hands::NoMatch;
     if (!onlyOnePlayer) {
-        for (auto it = players.begin(); it != players.end(); ++it) {
-            Hands thisHand = it->determineHand(it->makeCompleteHand(game.getCommunityCards()));
-            if (thisHand > bestHand) {
-                winners.clear();
-                winners.push_back(*it);
-                bestHand = thisHand;
-            } else if (thisHand == bestHand) {
-                winners.push_back(*it);
-            }
+    for (auto it = players.begin(); it != players.end(); ++it) {
+        std::vector<std::string> completeHand = it->makeCompleteHand(game.getCommunityCards());
+        Hands thisHand = it->determineHand(completeHand);
+
+        std::cout << it->getName() << ": ";
+        for (const auto& card : completeHand) {
+            std::cout << card << " ";
+        }
+        std::cout << " " << it->handsToString(thisHand) << "\n";
+
+        if (thisHand > bestHand) {
+            winners.clear();
+            winners.push_back(*it);
+            bestHand = thisHand;
+        } else if (thisHand == bestHand) {
+            winners.push_back(*it);
         }
     }
-
+}
     if (winners.size() == 1) {
         std::cout << "The winner is: " << winners[0].getName() << " with hand: " << winners[0].handsToString(bestHand) << "\n";
     }
