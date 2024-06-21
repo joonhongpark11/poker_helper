@@ -158,6 +158,55 @@ void Game::checkGameStat(std::vector<Player>& players) {
     std::cout << "Checks: " << getCheck() << "\n";
 }
 
-std::optional<Player> Game::determineWinner(std::vector<Player>& players) {
-    return std::nullopt;
+
+
+/*
+ *  compareHighest() compares the highest value when two hands 
+ *  have the same value. If the number is still a draw,
+ *  it returns 0.
+ */
+
+int Game::compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2) {
+    // Evaluate ranks of both hands
+    Player player = {"util", 100};
+    Hands rank1 = player.evaluateHand(hand1);
+    Hands rank2 = player.evaluateHand(hand2);
+
+    // Compare hand ranks first
+    if (rank1 > rank2) return 1;
+    if (rank1 < rank2) return -1;
+
+    return 0;
 }
+
+// Function to find the winner among multiple players, returns vector of winner indices
+std::vector<Player> Game::findWinners(std::vector<Player>& players) {
+    std::vector<std::vector<std::string>> playersHands;
+    for (auto& player : players) {
+        playersHands.push_back(player.makeCompleteHand(getCommunityCards()));
+    }
+
+    std::vector<Player> winners;
+    if (!players.empty()) {
+        winners.push_back(players[0]); // Start by assuming the first player is the winner
+    }
+
+    for (size_t i = 1; i < playersHands.size(); ++i) {
+        int result = compareHands(winners.front().makeCompleteHand(getCommunityCards()), playersHands[i]);
+        if (result < 0) {
+            winners.clear();
+            winners.push_back(players[i]);
+        } else if (result == 0) {
+            winners.push_back(players[i]);  // Add this player to winners if it's a draw
+        }
+    }
+
+    return winners;
+}
+
+// to make: 
+//  findBestFiveCardHand
+// compareHighest --> when two or more people have the same highest hands,
+// compare the best 5 cards and check whos the winner.
+// when they have the same individual cards, then draw. 
+// we don't compare the suit in this program. 

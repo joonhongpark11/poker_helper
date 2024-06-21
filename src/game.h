@@ -67,7 +67,8 @@ public:
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
-    std::optional<Player> determineWinner(std::vector<Player>& players);
+    std::vector<Player> Game::findWinners(std::vector<Player>& players);
+    int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
 };
 
 

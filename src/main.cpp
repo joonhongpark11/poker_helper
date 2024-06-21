@@ -113,7 +113,7 @@ while ((round < 5) && (game.getCheck() > 1)) {
     if (!onlyOnePlayer) {
     for (auto it = players.begin(); it != players.end(); ++it) {
         std::vector<std::string> completeHand = it->makeCompleteHand(game.getCommunityCards());
-        Hands thisHand = it->determineHand(completeHand);
+        Hands thisHand = it->evaluateHand(completeHand);
 
         std::cout << it->getName() << ": ";
         for (const auto& card : completeHand) {
