@@ -7,6 +7,7 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <set>
 #include <iostream>
 #include <map>
 
@@ -65,16 +66,17 @@ public:
     static int compareHighest(const std::vector<std::string>& hand1,
                               const std::vector<std::string>& hand2);
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);                          
-    bool isOnePair(const std::vector<std::string>& communityCards);
-    bool isTwoPair(const std::vector<std::string>& communityCards);
-    bool isThreeOfAKind(const std::vector<std::string>& communityCards);
-    bool isStraight(const std::vector<std::string>& communityCards);
-    bool isFlush(const std::vector<std::string>& communityCards);
-    bool isFullHouse(const std::vector<std::string>& communityCards);
-    bool isFourOfAKind(const std::vector<std::string>& communityCards);
-    bool isStraightFlush(const std::vector<std::string>& communityCards);
-    bool isRoyalFlush(const std::vector<std::string>& communityCards);
-    Hands determineHand(const std::vector<std::string>& communityCards);
+    bool isOnePair(const std::vector<std::string>& completeHand);
+    bool isTwoPair(const std::vector<std::string>& completeHand);
+    bool isThreeOfAKind(const std::vector<std::string>& completeHand);
+    bool isStraight(const std::vector<std::string>& completeHand);
+    bool isFlush(const std::vector<std::string>& completeHand);
+    bool isFullHouse(const std::vector<std::string>& completeHand);
+    bool isFourOfAKind(const std::vector<std::string>& ccompleteHand);
+    bool isStraightFlush(const std::vector<std::string>& completeHand);
+    bool isRoyalFlush(const std::vector<std::string>& completeHand);
+    Hands evaluateHand(const std::vector<std::string>& completeHand);
+    int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
     void betting(int amount, Game& game);
     int chooseAction();
     void doAction(int action, Game& game);

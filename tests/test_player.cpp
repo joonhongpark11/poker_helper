@@ -66,6 +66,10 @@ TEST(makeCompleteHandTest, validCompleteHand) {
     std::vector<std::string> communityCards = {"AC", "JD", "3H", "5C", "9S"};
     std::vector<std::string> expectedResult = {"AC", "JD", "3H", "5C", "9S", "3D", "8C"};
     EXPECT_EQ(player.makeCompleteHand(communityCards), expectedResult);
+
+    //duplicated cards
+    std::vector<std::string> communityCards2 = {"4C", "3D", "6H", "QD", "9S"};
+    EXPECT_THROW(player.makeCompleteHand(communityCards2), std::invalid_argument);
 }
 
 // isOnePair() Test
@@ -75,11 +79,13 @@ TEST(isOnePairTest, validOnePair) {
 
     //correct input
     std::vector<std::string> communityCards = {"AC", "JD", "3H", "5C", "9S"};
-    EXPECT_EQ(player.isOnePair(communityCards), true);
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isOnePair(completeHand), true);
 
     //wrong input
     std::vector<std::string> communityCards2 = {"AC", "JD", "7H", "5C", "9S"};
-    EXPECT_EQ(player.isOnePair(communityCards2), false);
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isOnePair(completeHand2), false);
 }
 
 // isTwoPair() Test
@@ -88,12 +94,14 @@ TEST(isTwoPairTest, validTwoPair) {
     player.setHoleCards({"3D", "8C"});
 
     //correct input
-    std::vector<std::string> communityCards = {"AC", "JD", "3H", "8C", "9S"};
-    EXPECT_EQ(player.isTwoPair(communityCards), true);
+    std::vector<std::string> communityCards = {"AC", "JD", "3H", "8D", "9S"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isTwoPair(completeHand), true);
 
     //wrong input
     std::vector<std::string> communityCards2 = {"3C", "JD", "7H", "5C", "9S"};
-    EXPECT_EQ(player.isTwoPair(communityCards2), false);
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isTwoPair(completeHand2), false);
 }
 
 // isThreeOfAKind() Test
@@ -102,12 +110,14 @@ TEST(isThreeOfAKindTest, validThreeOfAKind) {
     player.setHoleCards({"3D", "8C"});
 
     //correct input
-    std::vector<std::string> communityCards = {"3C", "JD", "3H", "8C", "9S"};
-    EXPECT_EQ(player.isThreeOfAKind(communityCards), true);
+    std::vector<std::string> communityCards = {"3C", "JD", "3H", "8D", "9S"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isThreeOfAKind(completeHand), true);
 
     //wrong input
-    std::vector<std::string> communityCards2 = {"AC", "JD", "3H", "8C", "9S"};
-    EXPECT_EQ(player.isThreeOfAKind(communityCards2), false);
+    std::vector<std::string> communityCards2 = {"AC", "JD", "3H", "8D", "9S"};
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isThreeOfAKind(completeHand2), false);
 }
 
 // isStraight() Test
@@ -117,15 +127,18 @@ TEST(isStraightTest, validStraight) {
 
     //correct input
     std::vector<std::string> communityCards = {"4C", "JD", "6H", "7C", "9S"};
-    EXPECT_EQ(player.isStraight(communityCards), true);
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isStraight(completeHand), true);
 
     // ace as a low
     std::vector<std::string> communityCards2 = {"AC", "4D", "6H", "2C", "9S"};
-    EXPECT_EQ(player.isStraight(communityCards2), true);
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isStraight(completeHand2), true);
 
     //wrong input
     std::vector<std::string> communityCards3 = {"4C", "JD", "JH", "7C", "9S"};
-    EXPECT_EQ(player.isStraight(communityCards3), false);
+    std::vector<std::string> completeHand3 = player.makeCompleteHand(communityCards3);
+    EXPECT_EQ(player.isStraight(completeHand3), false);
 }
 
 // isFlush() Test
@@ -135,11 +148,13 @@ TEST(isFlushTest, validFlush) {
 
     //correct input
     std::vector<std::string> communityCards = {"4D", "JD", "6H", "QD", "9S"};
-    EXPECT_EQ(player.isFlush(communityCards), true);
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isFlush(completeHand), true);
 
     //wrong input
     std::vector<std::string> communityCards2 = {"4C", "JD", "6H", "QD", "9S"};
-    EXPECT_EQ(player.isFlush(communityCards2), false);
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isFlush(completeHand2), false);
 }
 
 // isFullHouse() Test
@@ -148,14 +163,63 @@ TEST(isFullHouseTest, validFullHouse) {
     player.setHoleCards({"3D", "5D"});
 
     //correct input
-    std::vector<std::string> communityCards = {"3S", "3H", "5H", "5D", "9S"};
-    EXPECT_EQ(player.isFullHouse(communityCards), true);
+    std::vector<std::string> communityCards = {"3S", "3H", "5H", "5C", "9S"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isFullHouse(completeHand), true);
 
     //wrong input
-    std::vector<std::string> communityCards2 = {"3S", "2H", "JH", "5D", "9S"};
-    EXPECT_EQ(player.isFullHouse(communityCards2), false);
+    std::vector<std::string> communityCards2 = {"3S", "2H", "JH", "5C", "9S"};
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isFullHouse(completeHand2), false);
 }
 
+// isFourOfAKind() Test
+TEST(isFourOfAKindTest, validFourOfAKind) {
+    Player player = {"Joon", 1000};
+    player.setHoleCards({"3D", "5D"});
+
+    //correct input
+    std::vector<std::string> communityCards = {"3S", "3H", "3C", "5C", "9S"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isFourOfAKind(completeHand), true);
+
+    //wrong input
+    std::vector<std::string> communityCards2 = {"2S", "3H", "3C", "5C", "9S"};
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isFourOfAKind(completeHand2), false);
+}
+
+// isStraightFlush() Test
+TEST(isStraightFlushTest, validStraightFlush) {
+    Player player = {"Joon", 1000};
+    player.setHoleCards({"3D", "5D"});
+
+    //correct input
+    std::vector<std::string> communityCards = {"4D", "2D", "6D", "5C", "9S"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isStraightFlush(completeHand), true);
+
+    //wrong input
+    std::vector<std::string> communityCards2 = {"9D", "2D", "6D", "5C", "9S"};
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isStraightFlush(completeHand2), false);
+}
+
+// isRoyalFlush() Test
+TEST(isRoyalFlushTest, validRoyalFlush) {
+     Player player = {"Joon", 1000};
+    player.setHoleCards({"TD", "5H"});
+
+    //correct input
+    std::vector<std::string> communityCards = {"JD", "AD", "6S", "QD", "KD"};
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    EXPECT_EQ(player.isRoyalFlush(completeHand), true);
+
+    //wrong input
+    std::vector<std::string> communityCards2 = {"2D", "AD", "6S", "QD", "KD"};
+    std::vector<std::string> completeHand2 = player.makeCompleteHand(communityCards2);
+    EXPECT_EQ(player.isRoyalFlush(completeHand2), false);
+}
 
 
 
