@@ -52,6 +52,7 @@ public:
     void setCoin(int coin) { this->coin = coin; }
     std::vector<std::string> getHoleCards() { return holeCards; }
     void setHoleCards(const std::vector<std::string>& newHand) { holeCards = newHand; }
+    void setHoleCards() { holeCards.clear(); }
     int getCoinBet() { return coinBet; }
     void setCoinBet(int coin) { this->coinBet = coin; }
     bool getFold() { return fold; }
@@ -75,6 +76,8 @@ public:
     bool isFourOfAKind(const std::vector<std::string>& ccompleteHand);
     bool isStraightFlush(const std::vector<std::string>& completeHand);
     bool isRoyalFlush(const std::vector<std::string>& completeHand);
+    std::vector<std::string> findBestFiveCardHand(const std::vector<std::string>& completeHand);
+    static int isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
     Hands evaluateHand(const std::vector<std::string>& completeHand);
     int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
     void betting(int amount, Game& game);

@@ -43,8 +43,10 @@ public:
     //getter and setter
     std::vector<std::string> getCardsOnField() {return cardsOnField; }
     void setCardsOnField(std::vector<std::string> cards) {this->cardsOnField = cards; }
+    void setCardsOnField() { cardsOnField.clear(); }
     std::vector<std::string> getCommunityCards() {return communityCards; }
     void setCommunityCards(std::vector<std::string> cards) { this->communityCards = cards; }
+    void setCommunityCards() { communityCards.clear(); }
     int getTotalCoin() { return totalCoin; }
     void setTotalCoin(int coin) { this->totalCoin = coin; }
     int getPlayerNumber() { return playerNumber; }
@@ -67,8 +69,10 @@ public:
     int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
-    std::vector<Player> Game::findWinners(std::vector<Player>& players);
+    std::vector<Player*> Game::findWinners(std::vector<Player>& players);
     int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
+    void Game::distributeCoins(std::vector<Player*>& winners);
+    void Game::resetForNextGame(std::vector<Player*>& players);
 };
 
 
