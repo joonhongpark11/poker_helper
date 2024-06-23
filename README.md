@@ -47,6 +47,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/20: Editing the functions and testing.
 
+- 2024/06/22: made a few more important functions. Next job is running these functions accordingly and make a game cycle work.
+
 </details>
 
 # To-do List
