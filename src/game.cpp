@@ -179,34 +179,66 @@ int Game::compareHands(const std::vector<std::string>& hand1, const std::vector<
     return 0;
 }
 
-// Function to find the winner among multiple players, returns vector of winner indices
-std::vector<Player> Game::findWinners(std::vector<Player>& players) {
-    std::vector<std::vector<std::string>> playersHands;
+std::vector<Player*> Game::findWinners(std::vector<Player>& players) {
+    std::vector<std::vector<std::string>> bestHands;  // Stores the best 5-card hands for each player
     for (auto& player : players) {
-        playersHands.push_back(player.makeCompleteHand(getCommunityCards()));
+        // Each player finds their best hand from their complete set of 7 cards
+        bestHands.push_back(player.findBestFiveCardHand(player.makeCompleteHand(getCommunityCards())));
     }
 
-    std::vector<Player> winners;
+    std::vector<Player*> winners;
     if (!players.empty()) {
-        winners.push_back(players[0]); // Start by assuming the first player is the winner
+        winners.push_back(&players[0]);  // Start by assuming the first player is the winner (use pointer)
     }
 
-    for (size_t i = 1; i < playersHands.size(); ++i) {
-        int result = compareHands(winners.front().makeCompleteHand(getCommunityCards()), playersHands[i]);
+    // Compare each player's best hand to find the winner
+    for (size_t i = 1; i < players.size(); ++i) {
+        // Correctly refer to the best hands of the currently considered winner and the current player
+        int result = Player::isBetterHand(bestHands[winners.front() - &players[0]], bestHands[i]);
         if (result < 0) {
-            winners.clear();
-            winners.push_back(players[i]);
+            winners.clear();  // Clear previous winners as a better hand is found
+            winners.push_back(&players[i]);  // Push the address of the player
         } else if (result == 0) {
-            winners.push_back(players[i]);  // Add this player to winners if it's a draw
+            winners.push_back(&players[i]);  // Add this player to winners if it's a draw (use pointer)
         }
     }
 
     return winners;
 }
 
+void Game::distributeCoins(std::vector<Player*>& winners) {
+    int numWinners = winners.size();
+    if (numWinners == 0) {
+        return;
+    }
+
+    int coinsPerWinner = getTotalCoin() / numWinners;  // Each winner's equal share
+    int remainder = getTotalCoin() % numWinners;       // Remainder if not divisible evenly
+
+    for (int i = 0; i < numWinners; ++i) {
+        int additionalCoin = (i < remainder) ? 1 : 0;
+        winners[i]->setCoin(coinsPerWinner + additionalCoin);
+    }
+}
+
+void Game::resetForNextGame(std::vector<Player*>& players) {
+    for (int i = 0; i < players.size(); ++i) {
+        players[i]->setHoleCards();
+        players[i]->setCoinBet(0);
+        players[i]->setFold(false);
+    }
+    setCardsOnField();
+    setCommunityCards();
+    setTotalCoin(0);
+    setHasBet(false);
+    setCheck(0);
+}
+
+
+
 // to make: 
-//  findBestFiveCardHand
-// compareHighest --> when two or more people have the same highest hands,
+//  findBestFiveCardHand -- done
+// compareHighest --> when two or more people have the same highest hands, -- done
 // compare the best 5 cards and check whos the winner.
 // when they have the same individual cards, then draw. 
 // we don't compare the suit in this program. 

@@ -314,6 +314,52 @@ bool Player::isRoyalFlush(const std::vector<std::string>& completeHand) {
     return false;
 } /* isRoyalFlush() */
 
+// Function to compare two hands to determine which is better
+// Returns 1 if hand1 is better, -1 if hand2 is better, 0 if they are equal
+int Player::isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2) {
+    std::vector<int> values1, values2;
+    for (const auto& card : hand1) values1.push_back(convertNumbers(card[0]));
+    for (const auto& card : hand2) values2.push_back(convertNumbers(card[0]));
+
+    std::sort(values1.begin(), values1.end(), std::greater<int>());
+    std::sort(values2.begin(), values2.end(), std::greater<int>());
+
+    for (int i = 0; i < values1.size(); i++) {
+        if (values1[i] > values2[i]) return 1;
+        if (values1[i] < values2[i]) return -1;
+    }
+    return 0;  // If completely equal, return 0 indicating a draw
+}
+
+
+// Function to find the best 5-card hand from a set of 7 cards
+std::vector<std::string> Player::findBestFiveCardHand(const std::vector<std::string>& completeHand) {
+    std::vector<std::string> bestHand(5);
+    std::vector<std::string> currentHand(5);
+    Hands bestRank = Hands::NoMatch;
+    Hands currentRank;
+
+    // Generate all combinations of 5 out of 7 cards
+    std::vector<bool> select(7, false);
+    std::fill(select.begin(), select.begin() + 5, true);
+    do {
+        int index = 0;
+        for (int i = 0; i < 7; ++i) {
+            if (select[i]) {
+                currentHand[index++] = completeHand[i];
+            }
+        }
+        currentRank = evaluateHand(currentHand);
+        int comparisonResult = isBetterHand(currentHand, bestHand);
+        if (currentRank > bestRank || (currentRank == bestRank && comparisonResult == 1)) {
+            bestRank = currentRank;
+            bestHand = currentHand;
+        }
+    } while (std::prev_permutation(select.begin(), select.end()));
+
+    return bestHand;
+}
+
 /*
  *  determineHand() will determine what hand the player has. 
  *  Should be in order from highest hand to lowest hand because
