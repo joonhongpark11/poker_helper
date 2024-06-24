@@ -60,13 +60,13 @@ public:
     int getCheck() { return check; }
     void setCheck(int check) { this->check = check; }
 
+    // game setting functions
+    std::vector<std::string> generateDeck();
 
 
     std::vector<std::string> eraseCommon();
-    std::vector<std::string> generateDeck();
     std::string pickRandomCard();
     int drawHoleCard(Player& p);
-    int chooseDealerPosition(int playerNumber);
     std::vector<Player> playerSort(std::vector<Player>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
     std::vector<Player*> Game::findWinners(std::vector<Player>& players);

@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "Player.h"
 
+/*--------------game setting functions--------------------------------------*/
+
 /*
  *  generateDeck() will generates a full 52 cards deck.
  */
@@ -98,22 +100,6 @@ int playerInputLoop() {
     }
     return playerNum;
 } /* playerInputLoop() */
-
-/*
- *  chooseDealerPosition() choose the initial position of the dealer.
- */
-
-int Game::chooseDealerPosition(int playerNumber) {
-    // Static random number generator
-    // This rng will be initialized only once across multiple calls
-    static std::mt19937 rng(std::random_device{}());
-
-    // Uniform distribution from 0 to playerNumber
-    std::uniform_int_distribution<> dist(1, playerNumber + 1);
-
-    // Generate and return a random number from the distribution
-    return dist(rng);
-} /* chooseDealerPosition() */
 
 /*
  *  playerSort() will sort the playerlist based on the dealer position.
