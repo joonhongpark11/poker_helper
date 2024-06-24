@@ -40,10 +40,7 @@ private:
 public:
     // constructor
     Player(const std::string& name, int coin)
-    : name(name), coin(coin), fold(false) {
-        // 'holeCards' is automatically initialized to an empty vector
-        // All checks are initialized to true
-    }
+    : name(name), coin(coin), fold(false) {}
 
 
     // Getters and setters
@@ -60,13 +57,14 @@ public:
 
     
 
-    // Poker hand evaluation functions
+    // util functions
     static int convertNumbers(char rank);
     static std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
     static std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
-    static int compareHighest(const std::vector<std::string>& hand1,
-                              const std::vector<std::string>& hand2);
-    std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);                          
+    std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);
+    std::string handsToString(Hands hand);
+
+    // hand evalulation boolean functions                        
     bool isOnePair(const std::vector<std::string>& completeHand);
     bool isTwoPair(const std::vector<std::string>& completeHand);
     bool isThreeOfAKind(const std::vector<std::string>& completeHand);
@@ -76,14 +74,16 @@ public:
     bool isFourOfAKind(const std::vector<std::string>& ccompleteHand);
     bool isStraightFlush(const std::vector<std::string>& completeHand);
     bool isRoyalFlush(const std::vector<std::string>& completeHand);
+
+    // post detection functions
     std::vector<std::string> findBestFiveCardHand(const std::vector<std::string>& completeHand);
-    static int isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
     Hands evaluateHand(const std::vector<std::string>& completeHand);
-    int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
+    static int isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
+
+    // player action functions
     void betting(int amount, Game& game);
     int chooseAction();
     void doAction(int action, Game& game);
-    std::string handsToString(Hands hand);
 };
 
 #endif // PLAYER_H

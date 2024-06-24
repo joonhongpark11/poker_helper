@@ -26,7 +26,8 @@ int main() {
 
     // game object creation per game --> should use while loop
     Game game = {playerNumber, smallBlind};
-    dealerPosition = game.chooseDealerPosition(game.getPlayerNumber());
+    // I think I dont need to use dealerPosition. Just start from player 1.
+    dealerPosition = 1;
     std::cout << "Dealer Position is right side of " << players[dealerPosition - 1].getName() << "\n";
     std::cout << "Here is the List of the player positions.\n";
     players = game.playerSort(players, dealerPosition);
