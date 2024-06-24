@@ -51,7 +51,7 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/23: Organized code a bit.
 
-- 2024/06/24: Keep organizing the codes.
+- 2024/06/24: Keep organizing the codes. Changed github account!
 
 </details>
 
