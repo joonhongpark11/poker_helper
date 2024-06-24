@@ -53,9 +53,6 @@ You need to do several steps for using google test.<br>
 
 </details>
 
-# To-do List
-1. I need to make a game object and it should have fields: total_betting_amount, cardsOnField. Also Player needs field: bettingAmount which tracks how much the player is betting on each game.
-
 
 - poker step
 
