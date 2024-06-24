@@ -51,6 +51,7 @@ std::vector<std::string> Game::eraseCommon() {
 /*
  * pickRandomCard() picks a random card from 'cardsLeft' and moves it to 'cardsOnField'.
  */
+
 std::string Game::pickRandomCard() {
     std::vector<std::string> currentDeck = eraseCommon();
 
@@ -79,47 +80,28 @@ int Game::drawHoleCard(Player& p) {
     return OK;
 }
 
-
 /*
- *  playerInputLoop() will asks users how many players they want to play, and return the number.
+ *  sortPlayer() will sort the playerlist based on the dealer position.
  */
 
-int playerInputLoop() {
-    int playerNum;
-    while (1) {
-        std::cout << PLAYER_INPUT;
-        if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
-            std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
-            break;
-        }
-        else {
-            std::cout << INVALID_PLAYER_NUMBER;
-            std::cin.clear(); // Clears the error state of cin.
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignores the rest of the current line, up to '\n' or EOF.
-        }
-    }
-    return playerNum;
-} /* playerInputLoop() */
-
-/*
- *  playerSort() will sort the playerlist based on the dealer position.
- */
-
-std::vector<Player> Game::playerSort(std::vector<Player>& players, int dealerPosition) {
-    std::vector<Player> temp;
-    for (int i = 0; i < dealerPosition - 1; ++i) {
+void Game::sortPlayer(std::vector<Player*>& players, int dealerPosition) {
+    // Create a temporary vector to hold elements before dealerPosition
+    std::vector<Player*> temp;
+    for (int i = 0; i < dealerPosition; ++i) {
         temp.push_back(players[i]);
     }
-    std::vector<Player> newPlayers;
-    for (int i = dealerPosition - 1; i < players.size(); ++i) {
-        newPlayers.push_back(players[i]);
-    }
-    
-    // Insert all elements of temp at the end of newPlayers
-    newPlayers.insert(newPlayers.end(), temp.begin(), temp.end());
 
-    return newPlayers;
-} /* playerSort() */
+    // Shift elements from dealerPosition onwards to the start of players
+    int newIndex = 0;
+    for (int i = dealerPosition; i < players.size(); ++i) {
+        players[newIndex++] = players[i];
+    }
+
+    // Move elements from temp to the end of players
+    for (int i = 0; i < temp.size(); ++i) {
+        players[newIndex++] = temp[i];
+    }
+} /* sortPlayer() */
 
 
 void Game::checkGameStat(std::vector<Player>& players) {
@@ -220,11 +202,53 @@ void Game::resetForNextGame(std::vector<Player*>& players) {
     setCheck(0);
 }
 
+/*-----------------Game process functions------------------------------*/
 
+/*
+ *  requestPlayerNumbers() will asks users how many players they want to play, and return the number.
+ */
 
-// to make: 
-//  findBestFiveCardHand -- done
-// compareHighest --> when two or more people have the same highest hands, -- done
-// compare the best 5 cards and check whos the winner.
-// when they have the same individual cards, then draw. 
-// we don't compare the suit in this program. 
+int requestPlayerNumbers() {
+    int playerNum;
+    while (1) {
+        std::cout << PLAYER_INPUT;
+        if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
+            std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
+            break;
+        }
+        else {
+            std::cout << INVALID_PLAYER_NUMBER;
+            std::cin.clear(); // Clears the error state of cin.
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignores the rest of the current line, up to '\n' or EOF.
+        }
+    }
+    return playerNum;
+} /* playerInputLoop() */
+
+/*
+ *  initializePlayers() initializes a vector of Player pointers.
+ */
+
+std::vector<Player*> initializePlayers(int& playerNumber) {
+    std::vector<Player*> players;
+    for (int i = 1; i <= playerNumber; ++i) {
+        std::string playerName = "player" + std::to_string(i);
+        Player* player = new Player(playerName, 100);
+        players.push_back(player);
+    }
+    Player* user = new Player("user", 100);
+    players.push_back(user);
+
+    return players;
+} /* initializePlayers() */
+
+/*
+ *  printPlyerOrder() prints the players in order.
+ */
+
+void printPlayerOrder(std::vector<Player*>& players) {
+    for (int i = 0; i < players.size(); ++i) {
+        std::cout << players[i]->getName() << " ";
+    }
+    std::cout << "\n";
+} /* printPlayerOrder() */

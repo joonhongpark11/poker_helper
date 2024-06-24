@@ -5,36 +5,32 @@
 
 
 int main() {
+    // greeting
     std::cout << GREETING;
-    int playerNumber = playerInputLoop();
+
+    // playerNumber request (doesn't include user)
+    int playerNumber = requestPlayerNumbers();
     
     // player initalization
-    std::vector<Player> players;
-    for (int i = 1; i <= playerNumber; ++i) {
-        std::string playerName = "player" + std::to_string(i);
-        Player player(playerName, 100);
-        players.push_back(player);
-    }
-    Player user("user", 100);
-    players.push_back(user);
+    std::vector<Player*> players = initializePlayers(playerNumber);
 
-    // Dealer position is fixed per execution
-    int dealerPosition;
-
-    //small blind
+    // game initialization variables
+    int dealerPosition = 0;
     int smallBlind = 5;
+    bool keepPlaying = true;
 
-    // game object creation per game --> should use while loop
-    Game game = {playerNumber, smallBlind};
-    // I think I dont need to use dealerPosition. Just start from player 1.
-    dealerPosition = 1;
-    std::cout << "Dealer Position is right side of " << players[dealerPosition - 1].getName() << "\n";
-    std::cout << "Here is the List of the player positions.\n";
-    players = game.playerSort(players, dealerPosition);
-    for (int i = 0; i < players.size(); ++i) {
-        std::cout << players[i].getName() << " ";
+    while (keepPlaying) {
+        Game game = {playerNumber + 1, smallBlind}; // include user
+        std::cout << "Dealer Position is " << players[dealerPosition]->getName() << "\n";
+        std::cout << "Here is the List of the player positions.\n";
+        game.sortPlayer(players, dealerPosition);
+        game.printPlayerOrder(players);
+
+
+        // after one round, update the dealer Position
+        dealerPosition++;
     }
-    std::cout << "\n";
+  
 
     //small blind
     players[0].betting(smallBlind, game);
