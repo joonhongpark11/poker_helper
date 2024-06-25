@@ -69,10 +69,10 @@ public:
     int drawHoleCard(Player& p);
     void sortPlayer(std::vector<Player*>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
-    std::vector<Player*> Game::findWinners(std::vector<Player>& players);
+    std::vector<Player*> findWinners(std::vector<Player>& players);
     int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
-    void Game::distributeCoins(std::vector<Player*>& winners);
-    void Game::resetForNextGame(std::vector<Player*>& players);
+    void distributeCoins(std::vector<Player*>& winners);
+    void resetForNextGame(std::vector<Player*>& players);
     void printPlayerOrder(std::vector<Player*>& players);
 };
 

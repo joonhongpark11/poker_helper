@@ -62,7 +62,7 @@ public:
     static std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
     static std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);
-    std::string handsToString(Hands hand);
+    static std::string handsToString(Hands hand);
 
     // hand evalulation boolean functions                        
     bool isOnePair(const std::vector<std::string>& completeHand);

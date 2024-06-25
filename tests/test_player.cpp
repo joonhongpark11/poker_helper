@@ -11,6 +11,11 @@ TEST(test_name, output_setence_for_pass) {
 }
 */
 
+
+/*---------------Util Functions---------------------------------*/
+
+
+
 // convertNumbers() Test
 TEST(numberConversionTest, validConversion) {
     //normal numbers
@@ -71,6 +76,24 @@ TEST(makeCompleteHandTest, validCompleteHand) {
     std::vector<std::string> communityCards2 = {"4C", "3D", "6H", "QD", "9S"};
     EXPECT_THROW(player.makeCompleteHand(communityCards2), std::invalid_argument);
 }
+
+// handsToString() Test
+TEST(handsToStringTest, validConversion) {
+    //corect input
+    EXPECT_EQ(Player::handsToString(Hands::NoMatch), "NoMatch");
+    EXPECT_EQ(Player::handsToString(Hands::ThreeOfAKind), "ThreeOfAKind");
+    EXPECT_EQ(Player::handsToString(Hands::RoyalFlush), "RoyalFlush");
+}
+
+
+
+
+
+
+
+
+/*---------------Hand Detection Boolean Functions---------------------------*/
+
 
 // isOnePair() Test
 TEST(isOnePairTest, validOnePair) {
@@ -223,6 +246,34 @@ TEST(isRoyalFlushTest, validRoyalFlush) {
 
 
 
+/*---------------------post detection functions------------------------*/
+
+
+// findBestFiveCardHand() Test
+TEST(findBestFiveCardHandTest, correctHand) {
+    std::vector<std::string> communityCards = {"6D", "KH", "QH", "JH", "TH"};
+
+    std::vector<std::string> expectedBestHand{"AH", "KH", "QH", "JH", "TH"};
+
+    Player player = {"player", 100};
+    player.setHoleCards({"5C", "AH"});
+
+    std::vector<std::string> actualBestHand = player.findBestFiveCardHand(communityCards);
+
+    EXPECT_EQ(actualBestHand, expectedBestHand);
+}
+
+// evaluateHand() Test
+TEST(evaluateHAndTest, correctHands) {
+    std::vector<std::string> inputHnds = {"AH", "KH", "QH", "JH", "TH", "5C", "6D"};
+    Player player = {"player", 100};
+
+    EXPECT_EQ(player.evaluateHand(inputHnds), Hands::RoyalFlush);
+
+    // no match
+    std::vector<std::string> inputHnds = {"AH", "KH", "QH", "3D", "TH", "5C", "6D"};
+    EXPECT_EQ(player.evaluateHand(inputHnds), Hands::NoMatch);
+}
 
 // Main function for running tests
 int main(int argc, char **argv) {

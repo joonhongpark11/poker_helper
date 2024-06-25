@@ -1,6 +1,6 @@
 #include "Player.h"
 
-/*---------------Array Processing Functions---------------------------------*/
+/*---------------Util Functions---------------------------------*/
 
 /*
  *  convertNumbers() changes the character number to integer number.
@@ -107,9 +107,10 @@ std::string Player::handsToString(Hands hand) {
         case Hands::FourOfAKind: return "FourOfAKind";
         case Hands::StraightFlush: return "StraightFlush";
         case Hands::RoyalFlush: return "RoyalFlush";
-        default: return "Unknown";
+        default:
+            throw std::invalid_argument("wrong hands input");
     }
-}
+} /* handsToString() */
 
 /*---------------Hand Detection Boolean Functions---------------------------*/
 
