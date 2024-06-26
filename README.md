@@ -53,6 +53,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/24: Keep organizing the codes. Changed github account! Made a few more testing.
 
+- 2024/06/25: fixed some main.cpp. I decided to write down the possible actions that players can do to make more accurate ations.
+
 </details>
 
 

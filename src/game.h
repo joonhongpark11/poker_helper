@@ -66,7 +66,8 @@ public:
 
     std::vector<std::string> eraseCommon();
     std::string pickRandomCard();
-    int drawHoleCard(Player& p);
+    void drawHoleCard(Player* p);
+    void Game::setupHoleCards(std::vector<Player*>& players);
     void sortPlayer(std::vector<Player*>& players, int dealerPosition);
     void checkGameStat(std::vector<Player>& players);
     std::vector<Player*> findWinners(std::vector<Player>& players);

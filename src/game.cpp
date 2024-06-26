@@ -72,12 +72,16 @@ std::string Game::pickRandomCard() {
 }
 
 
-int Game::drawHoleCard(Player& p) {
+void Game::drawHoleCard(Player* p) {
     std::string card1 = pickRandomCard();
     std::string card2 = pickRandomCard();
-    p.setHoleCards({card1, card2});
+    p->setHoleCards({card1, card2});
+}
 
-    return OK;
+void Game::setupHoleCards(std::vector<Player*>& players) {
+    for (int i = 0; i < players.size(); ++i) {
+        drawHoleCard(players[0]);
+    }
 }
 
 /*
