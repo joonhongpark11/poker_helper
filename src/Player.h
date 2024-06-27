@@ -35,12 +35,13 @@ private:
     int coin;
     int coinBet;
     std::vector<std::string> holeCards;
-    bool fold;
+    bool isFold;
+    bool doneAction;
 
 public:
     // constructor
     Player(const std::string& name, int coin)
-    : name(name), coin(coin), fold(false) {}
+    : name(name), coin(coin), coinBet(0), isFold(false), doneAction(false) {}
 
 
     // Getters and setters
@@ -52,8 +53,10 @@ public:
     void setHoleCards() { holeCards.clear(); }
     int getCoinBet() { return coinBet; }
     void setCoinBet(int coin) { this->coinBet = coin; }
-    bool getFold() { return fold; }
-    void setFold(bool isFold) { this->fold = isFold; }
+    bool getIsFold() { return isFold; }
+    void setIsFold(bool isFold) { this->isFold = isFold; }
+    bool getDoneAction() { return doneAction; }
+    void setDoneAction(bool doneAction) { this->doneAction = doneAction; }
 
     
 
@@ -82,7 +85,7 @@ public:
 
     // player action functions
     void betting(int amount, Game& game);
-    int chooseAction();
+    int chooseAction(Game& game);
     void doAction(int action, Game& game);
 };
 

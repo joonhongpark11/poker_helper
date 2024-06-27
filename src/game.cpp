@@ -125,9 +125,8 @@ void Game::checkGameStat(std::vector<Player>& players) {
             std::cout << card << " ";
         }
         std:: cout << ", ";
-        std::cout << "Fold: " << player.getFold() << "\n";
+        std::cout << "Fold: " << player.getIsFold() << "\n";
     }
-    std::cout << "Checks: " << getCheck() << "\n";
 }
 
 
@@ -197,13 +196,14 @@ void Game::resetForNextGame(std::vector<Player*>& players) {
     for (int i = 0; i < players.size(); ++i) {
         players[i]->setHoleCards();
         players[i]->setCoinBet(0);
-        players[i]->setFold(false);
+        players[i]->setIsFold(false);
+        players[i]->setDoneAction(false);
     }
     setCardsOnField();
     setCommunityCards();
     setTotalCoin(0);
     setHasBet(false);
-    setCheck(0);
+    setMaxBetting(0);
 }
 
 /*-----------------Game process functions------------------------------*/

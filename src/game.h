@@ -32,12 +32,12 @@ private:
     int playerNumber;
     int smallBlind;
     int maxBetting;
+    int round;
     bool hasBet;
-    int check;
 
 public:
     //constructor
-    Game(int players, int smallBlind) : playerNumber(players), smallBlind(smallBlind), hasBet(false), check(players + 1) {
+    Game(int players, int smallBlind) : totalCoin(0), playerNumber(players), smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
     }
 
     //getter and setter
@@ -57,8 +57,8 @@ public:
     void setMaxBetting(int bet) { this->maxBetting = bet; }
     bool getHasBet() { return hasBet; }
     void setHasBet(bool bet) { this->hasBet = bet; }
-    int getCheck() { return check; }
-    void setCheck(int check) { this->check = check; }
+    int getRound() { return round; }
+    void setRound(int round) { this->round = round; }
 
     // game setting functions
     std::vector<std::string> generateDeck();

@@ -55,6 +55,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/25: fixed some main.cpp. I decided to write down the possible actions that players can do to make more accurate ations.
 
+- 2024/06/26: almost done with player action. Hopefully can finish it by tomorrow.
+
 </details>
 
 

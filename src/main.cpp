@@ -44,11 +44,10 @@ int main() {
         }
 
         /*--------------------round repeating------------------------*/
-        int round = 1;
         bool onlyOnePlayer = false;
 
-        while ((round < 5) && (!onlyOnePlayer)) {
-            if (round == 2) {
+        while ((game.getRound() < 5) && (!onlyOnePlayer)) {
+            if (game.getRound() == 2) {
                 // draw three cards
                 std::vector<std::string> initialSet;
                 for (int i = 0; i < 3; ++i) {
@@ -61,7 +60,7 @@ int main() {
                 }
                 std::cout << "\n";
             }
-            else if ((round == 3) || (round == 4)) {
+            else if ((game.getRound() == 3) || (game.getRound() == 4)) {
                 // draw one card
                 std::vector<std::string> newSet = game.getCommunityCards();
                 newSet.push_back(game.pickRandomCard());
@@ -72,10 +71,10 @@ int main() {
                 std::cout << "\n";
             }
 
-
-
-
         }
+
+
+
 
         // after one round, update the dealer Position
         dealerPosition++;

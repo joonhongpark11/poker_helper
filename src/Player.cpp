@@ -434,19 +434,42 @@ void Player::betting(int amount, Game& game) {
 /*
  *  chooseAction() will choose what action to choose in the current round.
  */
-int Player::chooseAction() {
+int Player::chooseAction(Game& game) {
     // for now, I will choose randomly
     // after making statistical tool, this choice will be based on statistical result
     static std::mt19937 rng(std::random_device{}());  // Random number generator
 
-    // Uniform distribution from 0 to 99 (100 possibilities)
-    std::uniform_int_distribution<> dist(0, 99);
+    // 1. fold
+    // 2. check
+    // 3. call
+    // 4. bet
+    // 5. raise
+    std::vector<int> actions = {1, 2, 3, 4, 5};
 
-    // Generate a random number from the distribution
-    int randomNumber = dist(rng);
+    // from round 2, if there is no bet, no fold
+    if ((game.getRound() != 1) && (!game.getHasBet())) {
+        actions.erase(actions.begin());
+    }
+    // if there is a bet, you cannot check
+    // betting is only for the first time
+    if (game.getHasBet()) {
+        actions.erase(actions.begin() + 1);
+        actions.erase(actions.begin() + 3);
+    }
+    // if not bet, no raise
+    if (!game.getHasBet()) {
+        actions.erase(actions.begin() + 4);
+    }
+    // if there is no raise above the current coinbet, no call
+    if (getCoinBet() >= game.getMaxBetting()) {
+        actions.erase(actions.begin() + 2);
+    }
 
-    // Return 1 if the number is less than 80 (80% chance), else return 2
-    return randomNumber < 80 ? 1 : 2;
+    std::uniform_int_distribution<> dist(0, actions.size() - 1);
+
+   int randomIndex = dist(rng);
+
+    return actions[randomIndex];
 } /* chooseAction() */
 
 /*
@@ -456,19 +479,36 @@ int Player::chooseAction() {
 void Player::doAction(int action, Game& game) {
     int amount; // Declare outside to avoid bypass
     switch (action) {
-        case 1: // check
-            if (getCoinBet() < game.getMaxBetting()) {
-                amount = game.getMaxBetting() - getCoinBet();
-                betting(amount, game);
-            }
-            std::cout << getName() << ": check\n";
+        case 1: // fold
+            setIsFold(true);
+            std::cout << getName() << ": fold!\n"; 
             break;
-        case 2: // fold
-            setFold(true);
-            game.setCheck(game.getCheck() - 1);
-            std::cout << getName() << ": fold\n";
+        case 2: // check
+            std::cout << getName() << ": check!\n"; 
             break;
-        default:
-            throw std::invalid_argument("Invalid Action code received.");
-    }
+        case 3: // call
+            int amountToCall = game.getMaxBetting() - getCoinBet();
+            betting(amountToCall, game);
+            setDoneAction(true);
+            std::cout << getName() << ": call! added: " << amountToCall << "\n"; 
+            break;
+        case 4: // bet
+            // raise only the big blind for now
+            int amountToBet = game.getSmallBlind() * 2;
+            betting(amountToBet, game);
+            setDoneAction(true);
+            std::cout << getName() << ": bet! added: " << amountToBet << "\n"; 
+            // need to put everyone's doneAction to true
+            break;
+        case 5: // raise
+            // raise only the big blind for now
+            int amountToRaise = game.getMaxBetting() + (game.getSmallBlind() * 2);
+            game.setMaxBetting(amountToRaise);
+            int playerBet = amountToRaise - getCoinBet();
+            betting(playerBet, game);
+            setDoneAction(true);
+            std::cout << getName() << ": raise! added: " << (game.getSmallBlind() * 2) << "\n"; 
+            // need to put everyone's doneAction to true
+
+    }   
 }
