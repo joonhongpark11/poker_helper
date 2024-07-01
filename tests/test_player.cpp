@@ -19,19 +19,19 @@ TEST(test_name, output_setence_for_pass) {
 // convertNumbers() Test
 TEST(numberConversionTest, validConversion) {
     //normal numbers
-    EXPECT_EQ(Player::convertNumbers('3'), 3);
-    EXPECT_EQ(Player::convertNumbers('5'), 5);
-    EXPECT_EQ(Player::convertNumbers('9'), 9);
+    EXPECT_EQ(convertNumbers('3'), 3);
+    EXPECT_EQ(convertNumbers('5'), 5);
+    EXPECT_EQ(convertNumbers('9'), 9);
 
     // letter numbers
-    EXPECT_EQ(Player::convertNumbers('T'), 10);
-    EXPECT_EQ(Player::convertNumbers('J'), 11);
-    EXPECT_EQ(Player::convertNumbers('Q'), 12);
-    EXPECT_EQ(Player::convertNumbers('K'), 13);
-    EXPECT_EQ(Player::convertNumbers('A'), 14);
+    EXPECT_EQ(convertNumbers('T'), 10);
+    EXPECT_EQ(convertNumbers('J'), 11);
+    EXPECT_EQ(convertNumbers('Q'), 12);
+    EXPECT_EQ(convertNumbers('K'), 13);
+    EXPECT_EQ(convertNumbers('A'), 14);
 
     // invalid number
-    EXPECT_THROW(Player::convertNumbers('0'), std::invalid_argument);
+    EXPECT_THROW(convertNumbers('0'), std::invalid_argument);
 }
 
 // convertHandToNumbers() Test
@@ -39,11 +39,11 @@ TEST(convertHandToNumbersTest, validNumberConversion) {
     //correct input
     std::vector<std::string> hand = {"AC", "JD", "3H", "5C", "9S", "KS"};
     std::vector<int> expectedResult = {14, 11, 3, 5, 9, 13};
-    EXPECT_EQ(Player::convertHandToNumbers(hand), expectedResult);
+    EXPECT_EQ(convertHandToNumbers(hand), expectedResult);
 
     //wrong input
     std::vector<std::string> hand2 = {"AC", "JD", "3H", "5C", "9S", "KS", "S"};
-    EXPECT_THROW(Player::convertHandToNumbers(hand2), std::invalid_argument);
+    EXPECT_THROW(convertHandToNumbers(hand2), std::invalid_argument);
 }
 
 // convertHandToSuits() Test
@@ -51,15 +51,15 @@ TEST(convertHandToSuitsTest, validSuitConversion) {
     //correct input
     std::vector<std::string> hand = {"AC", "JD", "3H", "5C", "9S", "KS"};
     std::vector<char> expectedResult = {'C', 'D', 'H', 'C', 'S', 'S'};
-    EXPECT_EQ(Player::convertHandToSuits(hand), expectedResult);
+    EXPECT_EQ(convertHandToSuits(hand), expectedResult);
 
     //wrong suit
     std::vector<std::string> hand2 = {"AC", "JD", "3H", "5C", "9S", "KT"};
-    EXPECT_THROW(Player::convertHandToSuits(hand2), std::invalid_argument);
+    EXPECT_THROW(convertHandToSuits(hand2), std::invalid_argument);
 
     //wrong format
     std::vector<std::string> hand3 = {"AC", "JD", "3H", "5C", "9S", "T"};
-    EXPECT_THROW(Player::convertHandToSuits(hand3), std::invalid_argument);
+    EXPECT_THROW(convertHandToSuits(hand3), std::invalid_argument);
 }
 
 // makeCompleteHand() Test
@@ -80,9 +80,9 @@ TEST(makeCompleteHandTest, validCompleteHand) {
 // handsToString() Test
 TEST(handsToStringTest, validConversion) {
     //corect input
-    EXPECT_EQ(Player::handsToString(Hands::NoMatch), "NoMatch");
-    EXPECT_EQ(Player::handsToString(Hands::ThreeOfAKind), "ThreeOfAKind");
-    EXPECT_EQ(Player::handsToString(Hands::RoyalFlush), "RoyalFlush");
+    EXPECT_EQ(handsToString(Hands::NoMatch), "NoMatch");
+    EXPECT_EQ(handsToString(Hands::ThreeOfAKind), "ThreeOfAKind");
+    EXPECT_EQ(handsToString(Hands::RoyalFlush), "RoyalFlush");
 }
 
 
@@ -248,32 +248,68 @@ TEST(isRoyalFlushTest, validRoyalFlush) {
 
 /*---------------------post detection functions------------------------*/
 
-
 // findBestFiveCardHand() Test
 TEST(findBestFiveCardHandTest, correctHand) {
     std::vector<std::string> communityCards = {"6D", "KH", "QH", "JH", "TH"};
-
-    std::vector<std::string> expectedBestHand{"AH", "KH", "QH", "JH", "TH"};
+    std::vector<std::string> expectedBestHand = {"AH", "KH", "QH", "JH", "TH"};
 
     Player player = {"player", 100};
     player.setHoleCards({"5C", "AH"});
 
-    std::vector<std::string> actualBestHand = player.findBestFiveCardHand(communityCards);
+    std::vector<std::string> completeHand = player.makeCompleteHand(communityCards);
+    std::vector<std::string> actualBestHand = player.findBestFiveCardHand(completeHand);
+
+    // Sort both hands before comparison if not already sorted within findBestFiveCardHand
+    std::sort(expectedBestHand.begin(), expectedBestHand.end());
+    std::sort(actualBestHand.begin(), actualBestHand.end());
 
     EXPECT_EQ(actualBestHand, expectedBestHand);
 }
 
+
 // evaluateHand() Test
 TEST(evaluateHAndTest, correctHands) {
-    std::vector<std::string> inputHnds = {"AH", "KH", "QH", "JH", "TH", "5C", "6D"};
+    std::vector<std::string> inputHands = {"AH", "KH", "QH", "JH", "TH", "5C", "6D"};
     Player player = {"player", 100};
 
-    EXPECT_EQ(player.evaluateHand(inputHnds), Hands::RoyalFlush);
+    EXPECT_EQ(player.evaluateHand(inputHands), Hands::RoyalFlush);
 
     // no match
-    std::vector<std::string> inputHnds = {"AH", "KH", "QH", "3D", "TH", "5C", "6D"};
-    EXPECT_EQ(player.evaluateHand(inputHnds), Hands::NoMatch);
+    std::vector<std::string> inputHands2 = {"AH", "KH", "QH", "3D", "TH", "5C", "6D"};
+    EXPECT_EQ(player.evaluateHand(inputHands2), Hands::NoMatch);
 }
+
+
+/*-----------------player action functions----------------------------------------*/
+
+//betting() Test
+TEST(bettingTest, correctBetting) {
+    Player player = {"player", 100};
+    Game game = {5, 15};
+
+    int amountToBet = 30;
+    player.betting(amountToBet, game);
+
+    EXPECT_EQ(player.getCoin(), 70);
+    EXPECT_EQ(player.getCoinBet(), amountToBet);
+    EXPECT_EQ(game.getTotalCoin(), amountToBet);
+    EXPECT_EQ(game.getMaxBetting(), amountToBet);
+
+    // new betting
+    Player player2 = {"player2", 100};
+    int newBet = 45;
+    player2.betting(newBet, game);
+    EXPECT_EQ(player2.getCoin(), 55);
+    EXPECT_EQ(player2.getCoinBet(), newBet);
+    EXPECT_EQ(game.getTotalCoin(), 75);
+    EXPECT_EQ(game.getMaxBetting(), newBet);
+}
+
+// no test need yet for chooseAction()
+
+// no test right now for doAction()
+
+
 
 // Main function for running tests
 int main(int argc, char **argv) {

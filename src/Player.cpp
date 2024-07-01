@@ -7,7 +7,7 @@
  *  'A', which is 1 in general, is considered 14 for convenience.
  */
 
-int Player::convertNumbers(char rank) {
+int convertNumbers(char rank) {
     if (rank >= '2' && rank <= '9') {
         return rank - '0';  // Converts '2'-'9' to their respective integers
     }
@@ -27,13 +27,13 @@ int Player::convertNumbers(char rank) {
  *  a vector of integer card values.
  */
 
-std::vector<int> Player::convertHandToNumbers(const std::vector<std::string>& hand) {
+std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand) {
     std::vector<int> numbers;
     for (const std::string& card : hand) {
         if (card.size() != 2) {
             throw std::invalid_argument("wrong hand format");
         }
-        int number = Player::convertNumbers(card[0]);
+        int number = convertNumbers(card[0]);
         numbers.push_back(number);
     }
     return numbers;
@@ -44,7 +44,7 @@ std::vector<int> Player::convertHandToNumbers(const std::vector<std::string>& ha
  *  a vector of character suit values.
  */
 
-std::vector<char> Player::convertHandToSuits(const std::vector<std::string>& hand) {
+std::vector<char> convertHandToSuits(const std::vector<std::string>& hand) {
     std::vector<char> suits;
     std::unordered_set<char> suitSet = {'C', 'S', 'D', 'H'};
     for (const std::string& card : hand) {
@@ -61,6 +61,28 @@ std::vector<char> Player::convertHandToSuits(const std::vector<std::string>& han
     }
     return suits;
 } /* convertHandToSuits() */
+
+/*
+ *  handsToString() will return string value of the enum.
+ *  just like toString() in Java.
+ */
+
+std::string handsToString(Hands hand) {
+    switch(hand) {
+        case Hands::NoMatch: return "NoMatch";
+        case Hands::OnePair: return "OnePair";
+        case Hands::TwoPair: return "TwoPair";
+        case Hands::ThreeOfAKind: return "ThreeOfAKind";
+        case Hands::Straight: return "Straight";
+        case Hands::Flush: return "Flush";
+        case Hands::FullHouse: return "FullHouse";
+        case Hands::FourOfAKind: return "FourOfAKind";
+        case Hands::StraightFlush: return "StraightFlush";
+        case Hands::RoyalFlush: return "RoyalFlush";
+        default:
+            throw std::invalid_argument("wrong hands input");
+    }
+} /* handsToString() */
 
 /*
  *  makeCompleteHand() adds community cards and hole Cards.
@@ -90,28 +112,6 @@ std::vector<std::string> Player::makeCompleteHand(const std::vector<std::string>
     return completeHand;
 } /* makeCompleteHand() */
 
-/*
- *  handsToString() will return string value of the enum.
- *  just like toString() in Java.
- */
-
-std::string Player::handsToString(Hands hand) {
-    switch(hand) {
-        case Hands::NoMatch: return "NoMatch";
-        case Hands::OnePair: return "OnePair";
-        case Hands::TwoPair: return "TwoPair";
-        case Hands::ThreeOfAKind: return "ThreeOfAKind";
-        case Hands::Straight: return "Straight";
-        case Hands::Flush: return "Flush";
-        case Hands::FullHouse: return "FullHouse";
-        case Hands::FourOfAKind: return "FourOfAKind";
-        case Hands::StraightFlush: return "StraightFlush";
-        case Hands::RoyalFlush: return "RoyalFlush";
-        default:
-            throw std::invalid_argument("wrong hands input");
-    }
-} /* handsToString() */
-
 /*---------------Hand Detection Boolean Functions---------------------------*/
 
 /*
@@ -119,7 +119,7 @@ std::string Player::handsToString(Hands hand) {
  */   
 
 bool Player::isOnePair(const std::vector<std::string>& completeHand) {
-    std::vector<int> numbers = Player::convertHandToNumbers(completeHand);
+    std::vector<int> numbers = convertHandToNumbers(completeHand);
     
     std::map<int, int> counts;
     for (int number : numbers) {
@@ -344,9 +344,9 @@ bool Player::isRoyalFlush(const std::vector<std::string>& completeHand) {
  */
 
 std::vector<std::string> Player::findBestFiveCardHand(const std::vector<std::string>& completeHand) {
-    std::vector<std::string> bestHand(5);
+    std::vector<std::string> bestHand(completeHand.begin(), completeHand.begin() + 5);
     std::vector<std::string> currentHand(5);
-    Hands bestRank = Hands::NoMatch;
+    Hands bestRank = evaluateHand(bestHand);
     Hands currentRank;
 
     // Generate all combinations of 5 out of 7 cards
@@ -360,7 +360,7 @@ std::vector<std::string> Player::findBestFiveCardHand(const std::vector<std::str
             }
         }
         currentRank = evaluateHand(currentHand);
-        int comparisonResult = isBetterHand(currentHand, bestHand);
+        int comparisonResult = Game::compareSameHands(currentHand, bestHand);
         if (currentRank > bestRank || (currentRank == bestRank && comparisonResult == 1)) {
             bestRank = currentRank;
             bestHand = currentHand;
@@ -391,26 +391,6 @@ Hands Player::evaluateHand(const std::vector<std::string>& hand) {
     return Hands::NoMatch;
 } /* evaluateHand() */
 
-/*
- *  isBetterHand() evalulates the better than between two same hands.
- *  Returns 1 if hand1 is better, -1 if hand2 is better, 0 if they are equal
- */
-
-int Player::isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2) {
-    std::vector<int> values1, values2;
-    for (const auto& card : hand1) values1.push_back(convertNumbers(card[0]));
-    for (const auto& card : hand2) values2.push_back(convertNumbers(card[0]));
-
-    std::sort(values1.begin(), values1.end(), std::greater<int>());
-    std::sort(values2.begin(), values2.end(), std::greater<int>());
-
-    for (int i = 0; i < values1.size(); i++) {
-        if (values1[i] > values2[i]) return 1;
-        if (values1[i] < values2[i]) return -1;
-    }
-    return 0;  // If completely equal, return 0 indicating a draw
-} /* isBetterHand() */
-
 
 /*-----------------player action functions----------------------------------------*/
 
@@ -424,11 +404,11 @@ void Player::betting(int amount, Game& game) {
     // add to the player betting amount
     // need to remove the amount from the player's coin
     game.setTotalCoin(game.getTotalCoin() + amount);
-    if (amount > game.getMaxBetting()) {
+    setCoinBet(coinBet + amount);
+    setCoin(coin - amount);
+    if (coinBet > game.getMaxBetting()) {
         game.setMaxBetting(amount);
     }
-    setCoinBet(getCoinBet() + amount);
-    setCoin(getCoin() - amount);
 } /* betting() */
 
 /*
@@ -473,42 +453,55 @@ int Player::chooseAction(Game& game) {
 } /* chooseAction() */
 
 /*
- *  doAction() 
+ *  doAction() runs different actions based on the choice.
  */
-
 void Player::doAction(int action, Game& game) {
-    int amount; // Declare outside to avoid bypass
+    int amountToCall;
+    int amountToBet;
+    int amountToRaise;
+    int playerBet;
     switch (action) {
         case 1: // fold
             setIsFold(true);
             std::cout << getName() << ": fold!\n"; 
             break;
+        
         case 2: // check
             std::cout << getName() << ": check!\n"; 
             break;
+        
         case 3: // call
-            int amountToCall = game.getMaxBetting() - getCoinBet();
+            amountToCall = game.getMaxBetting() - getCoinBet();
             betting(amountToCall, game);
             setDoneAction(true);
             std::cout << getName() << ": call! added: " << amountToCall << "\n"; 
             break;
+        
         case 4: // bet
             // raise only the big blind for now
-            int amountToBet = game.getSmallBlind() * 2;
+            amountToBet = game.getSmallBlind() * 2;
             betting(amountToBet, game);
             setDoneAction(true);
             std::cout << getName() << ": bet! added: " << amountToBet << "\n"; 
-            // need to put everyone's doneAction to true
+            // need to put everyone's doneAction to true and make this person doneaction true
+            game.makeDoneActionFalse();
+            setDoneAction(true);
             break;
+        
         case 5: // raise
             // raise only the big blind for now
-            int amountToRaise = game.getMaxBetting() + (game.getSmallBlind() * 2);
+            amountToRaise = game.getMaxBetting() + (game.getSmallBlind() * 2);
             game.setMaxBetting(amountToRaise);
-            int playerBet = amountToRaise - getCoinBet();
+            playerBet = amountToRaise - getCoinBet();
             betting(playerBet, game);
             setDoneAction(true);
             std::cout << getName() << ": raise! added: " << (game.getSmallBlind() * 2) << "\n"; 
-            // need to put everyone's doneAction to true
-
-    }   
-}
+            // need to put everyone's doneAction to true and make this person doneaction true
+            game.makeDoneActionFalse();
+            setDoneAction(true);
+            break;
+        
+        default:
+            throw std::invalid_argument("wrong action number. Error thrown");
+    }
+} /* doAction() */

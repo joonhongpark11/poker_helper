@@ -3,25 +3,23 @@
 
 
 
-
 int main() {
+    /*
     // greeting
     std::cout << GREETING;
 
     // playerNumber request (doesn't include user)
     int playerNumber = requestPlayerNumbers();
     
-    // player initalization
-    std::vector<Player*> players = initializePlayers(playerNumber);
 
     // game initialization variables
     int dealerPosition = 0;
     int smallBlind = 5;
-    bool keepPlaying = true;
+    bool roundContinues = true;
 
     // repeat round
-    while (keepPlaying) {
-        /*------------------game setup------------------------------*/
+    while (roundContinues) {
+        // game setup
         Game game = {playerNumber + 1, smallBlind}; // include user
         std::cout << "Dealer Position is " << players[dealerPosition]->getName() << "\n";
         std::cout << "Here is the List of the player positions.\n";
@@ -43,7 +41,7 @@ int main() {
             std::cout << "\n";
         }
 
-        /*--------------------round repeating------------------------*/
+        // round repeat
         bool onlyOnePlayer = false;
 
         while ((game.getRound() < 5) && (!onlyOnePlayer)) {
@@ -146,7 +144,7 @@ while ((round < 5) && (game.getCheck() > 1)) {
 
 
 
-    
+*/
     
 
     return 0;

@@ -1,10 +1,9 @@
-// game.h
-
 #ifndef GAME_H
 #define GAME_H
 
 #include "Player.h"
 
+#include <cassert>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -26,21 +25,32 @@ class Player;
 
 class Game {
 private:
+    // need to reset each game
+    std::vector<std::string> cardsLeft;
     std::vector<std::string> cardsOnField;
     std::vector<std::string> communityCards;
     int totalCoin;
+    int maxBetting;
+    bool hasBet;
+
+    std::vector<Player*> players;
     int playerNumber;
     int smallBlind;
-    int maxBetting;
     int round;
-    bool hasBet;
 
 public:
     //constructor
-    Game(int players, int smallBlind) : totalCoin(0), playerNumber(players), smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
-    }
+    Game(int players, int smallBlind) : totalCoin(0), playerNumber(players),
+         smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
+            initializePlayers();
+            setCardsLeft(generateDeck());
+         }
 
     //getter and setter
+    std::vector<Player*> getPlayers() { return players; }
+    void setPlayers(std::vector<Player*> players) { this->players = players; }
+    std::vector<std::string> getCardsLeft() { return cardsLeft; }
+    void setCardsLeft( std::vector<std::string> cardsLeft) { this->cardsLeft = cardsLeft; }
     std::vector<std::string> getCardsOnField() {return cardsOnField; }
     void setCardsOnField(std::vector<std::string> cards) {this->cardsOnField = cards; }
     void setCardsOnField() { cardsOnField.clear(); }
@@ -66,20 +76,22 @@ public:
 
     std::vector<std::string> eraseCommon();
     std::string pickRandomCard();
-    void drawHoleCard(Player* p);
-    void Game::setupHoleCards(std::vector<Player*>& players);
-    void sortPlayer(std::vector<Player*>& players, int dealerPosition);
-    void checkGameStat(std::vector<Player>& players);
-    std::vector<Player*> findWinners(std::vector<Player>& players);
+    void drawHoleCards(Player* p);
+    void setupHoleCards();
+    void sortPlayer(int dealerPosition);
+    void checkGameStat();
+    std::vector<Player*> findWinners();
     int compareHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
+    int static compareSameHands(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
     void distributeCoins(std::vector<Player*>& winners);
-    void resetForNextGame(std::vector<Player*>& players);
-    void printPlayerOrder(std::vector<Player*>& players);
+    void resetForNextGame();
+    void printPlayerOrder();
+    void initializePlayers();
+    void makeDoneActionFalse();
 };
 
 // game process functions
 int requestPlayerNumbers();
-std::vector<Player*> initializePlayers(int& playerNumber);
 
 
 #endif // GAME_H

@@ -58,14 +58,8 @@ public:
     bool getDoneAction() { return doneAction; }
     void setDoneAction(bool doneAction) { this->doneAction = doneAction; }
 
-    
-
-    // util functions
-    static int convertNumbers(char rank);
-    static std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
-    static std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
+    // util function in Player
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);
-    static std::string handsToString(Hands hand);
 
     // hand evalulation boolean functions                        
     bool isOnePair(const std::vector<std::string>& completeHand);
@@ -81,12 +75,17 @@ public:
     // post detection functions
     std::vector<std::string> findBestFiveCardHand(const std::vector<std::string>& completeHand);
     Hands evaluateHand(const std::vector<std::string>& completeHand);
-    static int isBetterHand(const std::vector<std::string>& hand1, const std::vector<std::string>& hand2);
 
     // player action functions
     void betting(int amount, Game& game);
     int chooseAction(Game& game);
     void doAction(int action, Game& game);
 };
+
+// util global functions
+int convertNumbers(char rank);
+std::vector<int> convertHandToNumbers(const std::vector<std::string>& hand);
+std::vector<char> convertHandToSuits(const std::vector<std::string>& hand);
+std::string handsToString(Hands hand);
 
 #endif // PLAYER_H

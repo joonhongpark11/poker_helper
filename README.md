@@ -57,6 +57,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/26: almost done with player action. Hopefully can finish it by tomorrow.
 
+- 2024/06/30: fixed object structures and functions. 
+
 </details>
 
 

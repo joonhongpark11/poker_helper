@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include "../src/Game.h"
 
-// Test generateDeck
+// Test generateDeck()
 TEST(generateDeckTest, ValidDeck) {
-    std::vector<std::string> deck = generateDeck();
+    Game game = {5, 15};
+    std::vector<std::string> deck = game.generateDeck();
 
     // Check that the deck has 52 cards
     ASSERT_EQ(deck.size(), 52) << "Deck should contain exactly 52 cards";
@@ -29,6 +30,22 @@ TEST(generateDeckTest, ValidDeck) {
         ASSERT_TRUE(validCard) << "Invalid card found: " << card;
     }
 }
+
+//Test  pickRandomCard()
+TEST(pickRandomCardTest, wellPicked) {
+    Game game = {5, 15};
+    for (int i = 0; i < 52; ++i) {
+        std::string pickedCard = game.pickRandomCard();
+        EXPECT_FALSE(pickedCard.empty());
+        EXPECT_EQ(game.getCardsLeft().size() + game.getCardsOnField().size(), 52);
+    }
+    // After 52 picks, cardsLeft should be empty
+    EXPECT_TRUE(game.getCardsLeft().empty());
+
+    std::string pickedCard = game.pickRandomCard();
+    EXPECT_EQ(pickedCard, "");
+}
+
 
 // Main function for running tests
 int main(int argc, char **argv) {
