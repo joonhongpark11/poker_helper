@@ -59,6 +59,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/06/30: fixed object structures and functions. 
 
+- 2024/07/01: made a few more testings for Game.cpp
+
 </details>
 
 
