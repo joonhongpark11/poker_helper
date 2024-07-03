@@ -399,15 +399,18 @@ Hands Player::evaluateHand(const std::vector<std::string>& hand) {
  */
 
 void Player::betting(int amount, Game& game) {
-    // add to game totalCoin
-    // change maxBetting if bigger than current
-    // add to the player betting amount
-    // need to remove the amount from the player's coin
+    // Add to game totalCoin
     game.setTotalCoin(game.getTotalCoin() + amount);
+
+    // Add to the player's betting amount
     setCoinBet(coinBet + amount);
+
+    // Remove the amount from the player's coin
     setCoin(coin - amount);
+
+    // Change maxBetting if the player's total bet is bigger than current maxBetting
     if (coinBet > game.getMaxBetting()) {
-        game.setMaxBetting(amount);
+        game.setMaxBetting(coinBet);
     }
 } /* betting() */
 
@@ -415,41 +418,45 @@ void Player::betting(int amount, Game& game) {
  *  chooseAction() will choose what action to choose in the current round.
  */
 int Player::chooseAction(Game& game) {
-    // for now, I will choose randomly
-    // after making statistical tool, this choice will be based on statistical result
     static std::mt19937 rng(std::random_device{}());  // Random number generator
 
+    std::vector<int> validActions;
+
+    // Determine valid actions based on game state
     // 1. fold
+    if (game.getRound() == 1 || game.getHasBet()) {
+        validActions.push_back(1);
+    }
+    
     // 2. check
-    // 3. call
     // 4. bet
-    // 5. raise
-    std::vector<int> actions = {1, 2, 3, 4, 5};
-
-    // from round 2, if there is no bet, no fold
-    if ((game.getRound() != 1) && (!game.getHasBet())) {
-        actions.erase(actions.begin());
-    }
-    // if there is a bet, you cannot check
-    // betting is only for the first time
-    if (game.getHasBet()) {
-        actions.erase(actions.begin() + 1);
-        actions.erase(actions.begin() + 3);
-    }
-    // if not bet, no raise
     if (!game.getHasBet()) {
-        actions.erase(actions.begin() + 4);
+        validActions.push_back(2);
+        validActions.push_back(4);
+    } else {
+        // 3. call
+        if (getCoinBet() < game.getMaxBetting()) {
+            validActions.push_back(3);
+        }
+        // 5. raise
+        validActions.push_back(5);
     }
-    // if there is no raise above the current coinbet, no call
-    if (getCoinBet() >= game.getMaxBetting()) {
-        actions.erase(actions.begin() + 2);
+
+    // Always allow raise (which can be used for all-in)
+    if (std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
+        validActions.push_back(5);
     }
 
-    std::uniform_int_distribution<> dist(0, actions.size() - 1);
+    // Ensure there's at least one valid action
+    if (validActions.empty()) {
+        return 1;  // Default to folding if no valid actions
+    }
 
-   int randomIndex = dist(rng);
+    // Choose a random action from valid actions
+    std::uniform_int_distribution<> dist(0, validActions.size() - 1);
+    int randomIndex = dist(rng);
 
-    return actions[randomIndex];
+    return validActions[randomIndex];
 } /* chooseAction() */
 
 /*
@@ -482,6 +489,7 @@ void Player::doAction(int action, Game& game) {
             amountToBet = game.getSmallBlind() * 2;
             betting(amountToBet, game);
             setDoneAction(true);
+            game.setHasBet(true);
             std::cout << getName() << ": bet! added: " << amountToBet << "\n"; 
             // need to put everyone's doneAction to true and make this person doneaction true
             game.makeDoneActionFalse();

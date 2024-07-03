@@ -4,7 +4,6 @@
 
 
 int main() {
-    /*
     // greeting
     std::cout << GREETING;
 
@@ -13,70 +12,90 @@ int main() {
     
 
     // game initialization variables
-    int dealerPosition = 0;
+    int dealerPosition = playerNumber;
     int smallBlind = 5;
-    bool roundContinues = true;
 
-    // repeat round
-    while (roundContinues) {
-        // game setup
-        Game game = {playerNumber + 1, smallBlind}; // include user
-        std::cout << "Dealer Position is " << players[dealerPosition]->getName() << "\n";
-        std::cout << "Here is the List of the player positions.\n";
-        game.sortPlayer(players, dealerPosition);
-        game.printPlayerOrder(players);
-        //small blind
-        players[0]->betting(smallBlind, game);
-        //big blind
-        players[1]->betting(smallBlind * 2, game);
+    // game setup
+    Game game = {playerNumber + 1, smallBlind}; // include user
 
-        // setup hole cards
-        game.setupHoleCards(players);
-        // printing cards for debugging
-        for (int i = 0; i < players.size(); ++i) {
-            std::cout << players[i]->getName() << " cards: ";
-            for (std::string card : players[i]->getHoleCards()) {
-                std::cout << card << " ";
+    std::cout << "Dealer Position is " << game.getPlayers()[dealerPosition]->getName() << "\n";
+    std::cout << "Here is the List of the player positions.\n";
+    game.sortPlayer(dealerPosition);
+    game.printPlayerOrder();
+
+    //small blind
+    game.getPlayers()[0]->betting(smallBlind, game);
+    //big blind
+    game.getPlayers()[1]->betting(smallBlind * 2, game);
+    game.setHasBet(true);
+    game.checkGameStat();
+
+    // cards setup
+    game.setCardsLeft(game.generateDeck());
+    // setup hole cards
+    game.setupHoleCards();
+
+    int index = 2; // after small and big blind
+    while (!game.isPlayerAllDone()) {
+        // update proper index
+        assert(index <= game.getPlayerNumber() - 1);
+        
+        Player* currentPlayer = game.getPlayers()[index];
+        if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold()) {
+            int action = currentPlayer->chooseAction(game);
+            currentPlayer->doAction(action, game);
+        }
+            
+        // move to the next player
+        index++;
+        if (index == game.getPlayerNumber()) {
+            index = 0;
+        }
+    }
+    
+
+    game.checkGameStat();
+
+
+
+
+    /*
+
+    // round repeat
+    bool onlyOnePlayer = false;
+
+    while ((game.getRound() < 5) && (!onlyOnePlayer)) {
+        if (game.getRound() == 2) {
+            // draw three cards
+            std::vector<std::string> initialSet;
+            for (int i = 0; i < 3; ++i) {
+                initialSet.push_back(game.pickRandomCard());
+            }
+            game.setCommunityCards(initialSet);
+            std::cout << "community cards: ";
+            for (auto cards : game.getCommunityCards()) {
+                std::cout << cards << " ";
+            }
+            std::cout << "\n";
+        }
+        else if ((game.getRound() == 3) || (game.getRound() == 4)) {
+            // draw one card
+            std::vector<std::string> newSet = game.getCommunityCards();
+            newSet.push_back(game.pickRandomCard());
+            game.setCommunityCards(newSet);
+            for (auto cards : game.getCommunityCards()) {
+                std::cout << cards << " ";
             }
             std::cout << "\n";
         }
 
-        // round repeat
-        bool onlyOnePlayer = false;
-
-        while ((game.getRound() < 5) && (!onlyOnePlayer)) {
-            if (game.getRound() == 2) {
-                // draw three cards
-                std::vector<std::string> initialSet;
-                for (int i = 0; i < 3; ++i) {
-                    initialSet.push_back(game.pickRandomCard());
-                }
-                game.setCommunityCards(initialSet);
-                std::cout << "community cards: ";
-                for (auto cards : game.getCommunityCards()) {
-                    std::cout << cards << " ";
-                }
-                std::cout << "\n";
-            }
-            else if ((game.getRound() == 3) || (game.getRound() == 4)) {
-                // draw one card
-                std::vector<std::string> newSet = game.getCommunityCards();
-                newSet.push_back(game.pickRandomCard());
-                game.setCommunityCards(newSet);
-                for (auto cards : game.getCommunityCards()) {
-                    std::cout << cards << " ";
-                }
-                std::cout << "\n";
-            }
-
-        }
-
-
-
-
-        // after one round, update the dealer Position
-        dealerPosition++;
     }
+
+
+
+
+    // after one round, update the dealer Position
+    dealerPosition++;
 
 while ((round < 5) && (game.getCheck() > 1)) {
     }
@@ -141,11 +160,8 @@ while ((round < 5) && (game.getCheck() > 1)) {
     if (winners.size() == 1) {
         std::cout << "The winner is: " << winners[0].getName() << " with hand: " << winners[0].handsToString(bestHand) << "\n";
     }
+    */
 
-
-
-*/
-    
 
     return 0;
 }

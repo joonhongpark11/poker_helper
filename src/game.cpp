@@ -78,13 +78,13 @@ void Game::setupHoleCards() {
 void Game::sortPlayer(int dealerPosition) {
     // Create a temporary vector to hold elements before dealerPosition
     std::vector<Player*> temp;
-    for (int i = 0; i < dealerPosition; ++i) {
+    for (int i = 0; i <= dealerPosition; ++i) {
         temp.push_back(players[i]);
     }
 
     // Shift elements from dealerPosition onwards to the start of players
     int newIndex = 0;
-    for (int i = dealerPosition; i < players.size(); ++i) {
+    for (int i = dealerPosition + 1; i < players.size(); ++i) {
         players[newIndex++] = players[i];
     }
 
@@ -104,7 +104,9 @@ void Game::checkGameStat() {
     std::cout << "totalCoin: " << totalCoin << "\n";
     std::cout << "smallBlind: " << smallBlind << "\n";
     std::cout << "maxBetting: " << maxBetting << "\n";
-
+    std::cout << "round: " << round << "\n";
+    std::cout << "cardLeft: " << cardsLeft.size() << "\n";
+    std::cout << "cards On Field: " << cardsOnField.size() << "\n";
     std::cout << "Player Stats:\n";
     for (auto player : players) {
         std::cout << player->getName() << ":\n";
@@ -283,10 +285,10 @@ void Game::initializePlayers() {
     std::vector<Player*> players;
     for (int i = 1; i <= getPlayerNumber() - 1; ++i) {
         std::string playerName = "player" + std::to_string(i);
-        Player* player = new Player(playerName, 100);
+        Player* player = new Player(playerName, 10000);
         players.push_back(player);
     }
-    Player* user = new Player("user", 100);
+    Player* user = new Player("user", 10000);
     players.push_back(user);
 
     setPlayers(players);
@@ -313,6 +315,19 @@ void Game::makeDoneActionFalse() {
         players[i]->setDoneAction(false);
     }
 } /* makeDoneActionFalse() */
+
+/*
+ *  isPlayerAllDone() checks whether players done action or not.
+ */
+
+bool Game::isPlayerAllDone() {
+    for (int i = 0; i < playerNumber; ++i) {
+        if (!players[i]->getDoneAction() && !players[i]->getIsFold()) {
+            return false;
+        }
+    }
+    return true;
+} /* isPlayerAllDone() */
 
 
 

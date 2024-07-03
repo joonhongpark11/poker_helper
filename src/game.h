@@ -43,7 +43,6 @@ public:
     Game(int players, int smallBlind) : totalCoin(0), playerNumber(players),
          smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
             initializePlayers();
-            setCardsLeft(generateDeck());
          }
 
     //getter and setter
@@ -88,6 +87,7 @@ public:
     void printPlayerOrder();
     void initializePlayers();
     void makeDoneActionFalse();
+    bool isPlayerAllDone();
 };
 
 // game process functions

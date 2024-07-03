@@ -61,6 +61,8 @@ You need to do several steps for using google test.<br>
 
 - 2024/07/01: made a few more testings for Game.cpp
 
+- 2024/07/02: started fixing main function. It seems working!
+
 </details>
 
 

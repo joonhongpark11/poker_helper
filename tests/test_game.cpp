@@ -70,12 +70,12 @@ TEST(sortPlayer, sortPlayerTest) {
     Game game = {5 ,15};
     int dealerPosition = 3;
     game.sortPlayer(dealerPosition);
-    // 4->user->1->2->3
-    EXPECT_EQ(game.getPlayers()[0]->getName(), "player4");
-    EXPECT_EQ(game.getPlayers()[1]->getName(), "user");
-    EXPECT_EQ(game.getPlayers()[2]->getName(), "player1");
-    EXPECT_EQ(game.getPlayers()[3]->getName(), "player2");
-    EXPECT_EQ(game.getPlayers()[4]->getName(), "player3");
+    // user->1->2->3->4
+    EXPECT_EQ(game.getPlayers()[0]->getName(), "user");
+    EXPECT_EQ(game.getPlayers()[1]->getName(), "player1");
+    EXPECT_EQ(game.getPlayers()[2]->getName(), "player2");
+    EXPECT_EQ(game.getPlayers()[3]->getName(), "player3");
+    EXPECT_EQ(game.getPlayers()[4]->getName(), "player4");
 }
 
 // no test for checkGameStat()
