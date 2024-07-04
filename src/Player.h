@@ -4,6 +4,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <random>
 #include <cassert>
 #include <vector>
 #include <string>
@@ -78,6 +79,7 @@ public:
 
     // player action functions
     void betting(int amount, Game& game);
+    int chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng);
     int chooseAction(Game& game);
     void doAction(int action, Game& game);
 };

@@ -86,8 +86,10 @@ public:
     void resetForNextGame();
     void printPlayerOrder();
     void initializePlayers();
+    void freePlayers();
     void makeDoneActionFalse();
     bool isPlayerAllDone();
+    bool isOnlyOnePlayerLeft();
 };
 
 // game process functions

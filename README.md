@@ -63,6 +63,7 @@ You need to do several steps for using google test.<br>
 
 - 2024/07/02: started fixing main function. It seems working!
 
+- 2024/07/03: finally successfully ran. I was able to run full rounds, and one player cycle. Next step will be making all-in functions and appropriate modifications of relevant functions.
 </details>
 
 

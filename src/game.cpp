@@ -66,8 +66,8 @@ void Game::drawHoleCards(Player* p) {
  */
 
 void Game::setupHoleCards() {
-    for (int i = 0; i < players.size(); ++i) {
-        drawHoleCards(players[i]);
+    for (Player* player : players) {
+        drawHoleCards(player);
     }
 } /* setupHoleCards() */
 
@@ -107,6 +107,11 @@ void Game::checkGameStat() {
     std::cout << "round: " << round << "\n";
     std::cout << "cardLeft: " << cardsLeft.size() << "\n";
     std::cout << "cards On Field: " << cardsOnField.size() << "\n";
+    std::cout << "community cards: ";
+    for (int i = 0 ; i < communityCards.size(); ++i) {
+        std::cout << communityCards[i] << " ";
+    }
+    std::cout << "\n";
     std::cout << "Player Stats:\n";
     for (auto player : players) {
         std::cout << player->getName() << ":\n";
@@ -183,32 +188,41 @@ int Game::compareSameHands(const std::vector<std::string>& hand1, const std::vec
  */
 
 std::vector<Player*> Game::findWinners() {
-    std::vector<std::vector<std::string>> bestHands;  // Stores the best 5-card hands for each player
-    std::vector<Player*> activePlayers;  // Store only the active players (those who haven't folded)
+    std::vector<Player*> activePlayers;
+    std::vector<std::vector<std::string>> bestHands;
 
-    // Iterate through players and filter out the ones who have folded
+    // Filter active players and find their best hands
     for (auto& player : players) {
         if (!player->getIsFold()) {
-            // Each player finds their best hand from their complete set of 7 cards
-            bestHands.push_back(player->findBestFiveCardHand(player->makeCompleteHand(getCommunityCards())));
             activePlayers.push_back(player);
+            bestHands.push_back(player->findBestFiveCardHand(player->makeCompleteHand(getCommunityCards())));
         }
     }
 
-    std::vector<Player*> winners;
-    if (!activePlayers.empty()) {
-        winners.push_back(activePlayers[0]);
+    if (activePlayers.empty()) {
+        throw std::runtime_error("No active players found");
     }
 
-    // Compare each active player's best hand to find the winner
+    std::vector<Player*> winners = {activePlayers[0]};
+    std::vector<std::string> bestHand = bestHands[0];
+
+    // Compare each player's hand to the current best
     for (size_t i = 1; i < activePlayers.size(); ++i) {
-        // Correctly refer to the best hands of the currently considered winner and the current player
-        int result = compareSameHands(bestHands[winners.front() - activePlayers[0]], bestHands[i]);
-        if (result < 0) {
-            winners.clear();  // Clear previous winners as a better hand is found
-            winners.push_back(activePlayers[i]);  // Push the address of the player
+        int result = compareHands(bestHands[i], bestHand);
+        if (result > 0) {
+            winners.clear();
+            winners.push_back(activePlayers[i]);
+            bestHand = bestHands[i];
         } else if (result == 0) {
-            winners.push_back(activePlayers[i]);  // Add this player to winners if it's a draw
+            // If hands have the same ranking, use compareSameHands to break the tie
+            int sameHandResult = compareSameHands(bestHands[i], bestHand);
+            if (sameHandResult > 0) {
+                winners.clear();
+                winners.push_back(activePlayers[i]);
+                bestHand = bestHands[i];
+            } else if (sameHandResult == 0) {
+                winners.push_back(activePlayers[i]);
+            }
         }
     }
 
@@ -240,11 +254,11 @@ void Game::distributeCoins(std::vector<Player*>& winners) {
  *  resetForNextGame() resets fields 
  */
 void Game::resetForNextGame() {
-    for (int i = 0; i < players.size(); ++i) {
-        players[i]->setHoleCards();
-        players[i]->setCoinBet(0);
-        players[i]->setIsFold(false);
-        players[i]->setDoneAction(false);
+    for (Player* player : players) {
+        player->setHoleCards();
+        player->setCoinBet(0);
+        player->setIsFold(false);
+        player->setDoneAction(false);
     }
     setCardsOnField();
     setCommunityCards();
@@ -252,6 +266,7 @@ void Game::resetForNextGame() {
     setTotalCoin(0);
     setHasBet(false);
     setMaxBetting(0);
+    setRound(1);
 } /* resetForNextGame() */
 
 /*-----------------Game process functions------------------------------*/
@@ -294,13 +309,21 @@ void Game::initializePlayers() {
     setPlayers(players);
 } /* initializePlayers() */
 
+void Game::freePlayers() {
+    // Iterate through the vector of player pointers and delete each one
+    for (Player* player : players) {
+        delete player;  // Free the memory allocated for each player
+    }
+    players.clear();  // Clear the vector of pointers after deleting all objects
+}
+
 /*
  *  printPlyerOrder() prints the players in order.
  */
 
 void Game::printPlayerOrder() {
-    for (int i = 0; i < players.size(); ++i) {
-        std::cout << players[i]->getName() << " ";
+    for (Player* player : players) {
+        std::cout << player->getName() << " ";
     }
     std::cout << "\n";
 } /* printPlayerOrder() */
@@ -311,8 +334,8 @@ void Game::printPlayerOrder() {
  */
 
 void Game::makeDoneActionFalse() {
-    for (int i = 0; i < players.size(); i++) {
-        players[i]->setDoneAction(false);
+    for (Player* player : players) {
+        player->setDoneAction(false);
     }
 } /* makeDoneActionFalse() */
 
@@ -329,6 +352,22 @@ bool Game::isPlayerAllDone() {
     return true;
 } /* isPlayerAllDone() */
 
+bool Game::isOnlyOnePlayerLeft() {
+    int numFold = 0;
+    for (int i = 0; i < playerNumber; ++i) {
+        if (players[i]->getIsFold()) {
+            numFold++;
+        }
+    }
+    if (numFold == playerNumber) {
+        throw std::runtime_error("At least one player should not be fold. Game invalid");
+    }
+    if (numFold == (playerNumber - 1)) {
+        std::cout << "only one player left!\n";
+        return true;
+    }
+    return false;
+} /* isOnlyOnePlayerLeft() */
 
 
 

@@ -414,49 +414,49 @@ void Player::betting(int amount, Game& game) {
     }
 } /* betting() */
 
-/*
- *  chooseAction() will choose what action to choose in the current round.
- */
+
+int Player::chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng) {
+    std::discrete_distribution<int> dist(weights.begin(), weights.end());
+    return actions[dist(rng)];
+}
+
 int Player::chooseAction(Game& game) {
     static std::mt19937 rng(std::random_device{}());  // Random number generator
 
     std::vector<int> validActions;
+    std::vector<double> actionWeights;
 
-    // Determine valid actions based on game state
-    // 1. fold
+    // Determine valid actions and their corresponding weights based on game state
     if (game.getRound() == 1 || game.getHasBet()) {
         validActions.push_back(1);
+        actionWeights.push_back(1.0);  // Lower weight for fold
     }
     
-    // 2. check
-    // 4. bet
     if (!game.getHasBet()) {
         validActions.push_back(2);
+        actionWeights.push_back(4.0);  // Higher weight for check
         validActions.push_back(4);
+        actionWeights.push_back(2.0);  // Higher weight for bet
     } else {
-        // 3. call
         if (getCoinBet() < game.getMaxBetting()) {
             validActions.push_back(3);
+            actionWeights.push_back(3.0);  // Higher weight for call
         }
-        // 5. raise
         validActions.push_back(5);
+        actionWeights.push_back(2.0);  // Higher weight for raise
     }
 
-    // Always allow raise (which can be used for all-in)
     if (std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
         validActions.push_back(5);
+        actionWeights.push_back(2.0);  // Ensure raise is always available with higher weight
     }
 
-    // Ensure there's at least one valid action
     if (validActions.empty()) {
         return 1;  // Default to folding if no valid actions
     }
 
-    // Choose a random action from valid actions
-    std::uniform_int_distribution<> dist(0, validActions.size() - 1);
-    int randomIndex = dist(rng);
-
-    return validActions[randomIndex];
+    // Choose an action based on weighted probabilities
+    return chooseWeightedAction(validActions, actionWeights, rng);
 } /* chooseAction() */
 
 /*
@@ -479,9 +479,10 @@ void Player::doAction(int action, Game& game) {
         
         case 3: // call
             amountToCall = game.getMaxBetting() - getCoinBet();
+            std::cout << getName() << ": call! current: " << getCoinBet() << " max: " << game.getMaxBetting();
             betting(amountToCall, game);
             setDoneAction(true);
-            std::cout << getName() << ": call! added: " << amountToCall << "\n"; 
+            std::cout << " added: " << amountToCall << "\n"; 
             break;
         
         case 4: // bet
@@ -499,11 +500,12 @@ void Player::doAction(int action, Game& game) {
         case 5: // raise
             // raise only the big blind for now
             amountToRaise = game.getMaxBetting() + (game.getSmallBlind() * 2);
+            std::cout << getName() << ": raise! current max: " << game.getMaxBetting();
             game.setMaxBetting(amountToRaise);
             playerBet = amountToRaise - getCoinBet();
             betting(playerBet, game);
             setDoneAction(true);
-            std::cout << getName() << ": raise! added: " << (game.getSmallBlind() * 2) << "\n"; 
+            std::cout << " added: " << (game.getSmallBlind() * 2) << " now: " << game.getMaxBetting() <<  "\n"; 
             // need to put everyone's doneAction to true and make this person doneaction true
             game.makeDoneActionFalse();
             setDoneAction(true);
