@@ -12,7 +12,7 @@ int main() {
 
     // game initialization variables
     int dealerPosition = playerNumber;
-    int smallBlind = 5;
+    int smallBlind = 20;
 
     // game setup
     Game game = {playerNumber + 1, smallBlind}; // include user
@@ -100,11 +100,16 @@ int main() {
         //game reset
         game.resetForNextGame();
     } while(!(game.getPlayers()[0]->getName() == "player1"));
+
+    game.checkGameStat();
     
     // free dynamically allocated memories
     game.freePlayers();
 
 
-
     return 0;
 }
+
+// deal with only one player
+// deal with all in
+// make printing for distribute coins

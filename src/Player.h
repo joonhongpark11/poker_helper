@@ -38,6 +38,8 @@ private:
     std::vector<std::string> holeCards;
     bool isFold;
     bool doneAction;
+    bool isAllIn;
+
 
 public:
     // constructor
@@ -58,6 +60,8 @@ public:
     void setIsFold(bool isFold) { this->isFold = isFold; }
     bool getDoneAction() { return doneAction; }
     void setDoneAction(bool doneAction) { this->doneAction = doneAction; }
+    bool getIsAllIn() { return isAllIn; }
+    void setIsAllIn(bool isAllIn ) { this->isAllIn = isAllIn; }
 
     // util function in Player
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);
@@ -78,10 +82,12 @@ public:
     Hands evaluateHand(const std::vector<std::string>& completeHand);
 
     // player action functions
+    void putCoin(int amount, Game& game);
     void betting(int amount, Game& game);
     int chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng);
     int chooseAction(Game& game);
     void doAction(int action, Game& game);
+    void createSidePot(Game& game);
 };
 
 // util global functions

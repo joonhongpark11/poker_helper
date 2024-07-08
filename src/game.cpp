@@ -108,11 +108,12 @@ void Game::checkGameStat() {
     std::cout << "cardLeft: " << cardsLeft.size() << "\n";
     std::cout << "cards On Field: " << cardsOnField.size() << "\n";
     std::cout << "community cards: ";
-    for (int i = 0 ; i < communityCards.size(); ++i) {
-        std::cout << communityCards[i] << " ";
+    for (std::string card : communityCards) {
+        std::cout << card << " ";
     }
     std::cout << "\n";
     std::cout << "Player Stats:\n";
+    int total = 0;
     for (auto player : players) {
         std::cout << player->getName() << ":\n";
         std::cout << "coin: " << player->getCoin() << ", ";
@@ -123,7 +124,9 @@ void Game::checkGameStat() {
         }
         std:: cout << ", ";
         std::cout << "Fold: " << player->getIsFold() << "\n";
+        total += player->getCoin();
     }
+    std::cout << "total coin: " << total << "\n";
 } /* checkGameStat() */
 
 
@@ -354,8 +357,8 @@ bool Game::isPlayerAllDone() {
 
 bool Game::isOnlyOnePlayerLeft() {
     int numFold = 0;
-    for (int i = 0; i < playerNumber; ++i) {
-        if (players[i]->getIsFold()) {
+    for (Player* player : players) {
+        if (player->getIsFold()) {
             numFold++;
         }
     }
@@ -369,6 +372,37 @@ bool Game::isOnlyOnePlayerLeft() {
     return false;
 } /* isOnlyOnePlayerLeft() */
 
+bool Game::hasAllIn() {
+    for (Player* player : players) {
+        if (player->getIsAllIn()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Pot* Game::createNewPot() {
+    Pot* newPot = new Pot;
+    newPot->setAmount(0);
+    newPot->setThreshold(0);
+    newPot->setNextPtr(nullptr);
+    newPot->setPrevPtr(nullptr);
+
+    if (*pots == nullptr) {
+        // If there are no pots yet, initialize pots with newPot
+        *pots = newPot;
+    } else {
+        // Otherwise, find the last pot in the list and add the new pot
+        Pot* currentPot = *pots;
+        while (currentPot->getNextPtr() != nullptr) {
+            currentPot = currentPot->getNextPtr();
+        }
+        currentPot->setNextPtr(newPot);
+        newPot->setPrevPtr(currentPot);
+    }
+
+    return newPot;
+}
 
 
 

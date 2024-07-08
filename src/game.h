@@ -11,7 +11,7 @@
 #include <random>
 #include <unordered_set>
 
-#define GREETING "Welcome to Poker Helper!\nThis program is designed to help you win Poker, especially Texas Hold'em game.\n\n"
+#define GREETING "Welcome to Poker Helper!\nThis program is designed to help you win Poker, Texas Hold'em game.\n\n"
 #define PLAYER_INPUT "How many players do you want to play with?\n"
 #define INVALID_PLAYER_NUMBER "Player Number should be an integer from 1 to 9.\nPlease type the player number again!\n\n"
 
@@ -37,12 +37,13 @@ private:
     int playerNumber;
     int smallBlind;
     int round;
-
+    Pot** pots;
 public:
     //constructor
     Game(int players, int smallBlind) : totalCoin(0), playerNumber(players),
          smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
             initializePlayers();
+            createNewPot();
          }
 
     //getter and setter
@@ -68,6 +69,8 @@ public:
     void setHasBet(bool bet) { this->hasBet = bet; }
     int getRound() { return round; }
     void setRound(int round) { this->round = round; }
+    Pot** getPots() { return pots; }
+    void setPots(Pot** pots) { this->pots = pots; }
 
     // game setting functions
     std::vector<std::string> generateDeck();
@@ -90,7 +93,33 @@ public:
     void makeDoneActionFalse();
     bool isPlayerAllDone();
     bool isOnlyOnePlayerLeft();
+    bool hasAllIn();
+    Pot* createNewPot();
 };
+
+typedef struct Pot {
+private:
+    int amount;
+    int threshold;
+    std::vector<Player*> eligiblePlayers;
+    struct Pot* nextPtr;
+    struct Pot* prevPtr;
+
+public:
+    // Accessors
+    int getAmount() const { return amount; }
+    int getThreshold() const { return threshold; }
+    std::vector<Player*> getEligiblePlayers() const { return eligiblePlayers; }
+    Pot* getNextPtr() const { return nextPtr; }
+    Pot* getPrevPtr() const { return prevPtr; }
+    
+    // Mutators
+    void setAmount(int amt) { amount = amt; }
+    void setThreshold(int thresh) { threshold = thresh; }
+    void addPlayer(Player* player) { eligiblePlayers.push_back(player); }
+    void setNextPtr(Pot* ptr) { nextPtr = ptr; }
+    void setPrevPtr(Pot* ptr) { prevPtr = ptr; }
+} Pot;
 
 // game process functions
 int requestPlayerNumbers();

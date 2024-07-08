@@ -399,20 +399,67 @@ Hands Player::evaluateHand(const std::vector<std::string>& hand) {
  */
 
 void Player::betting(int amount, Game& game) {
-    // Add to game totalCoin
-    game.setTotalCoin(game.getTotalCoin() + amount);
+    Pot* curPot = *game.getPots();
+    int amount = 0;
+    // Add to pot
+    while(1) {
+        if (curPot->getThreshold() == 0) { // last pot
+            amount = game.getMaxBetting() - coinBet;
+            assert(amount > 0);
+            putCoin(amount, game);
+            // done
+            break;
+        }
+        else if (coinBet < curPot->getThreshold()) {
+            amount = curPot->getThreshold() - coinBet;
+            assert(amount > 0);
+            putCoin(amount, game);
+        }
+        curPot = curPot->getNextPtr();
+    }
+} /* betting() */
 
-    // Add to the player's betting amount
+void Player::putCoin(int amount, Game& game) {
     setCoinBet(coinBet + amount);
-
-    // Remove the amount from the player's coin
     setCoin(coin - amount);
-
-    // Change maxBetting if the player's total bet is bigger than current maxBetting
     if (coinBet > game.getMaxBetting()) {
         game.setMaxBetting(coinBet);
     }
-} /* betting() */
+}
+
+/*
+ *  should be used only when all-in is chosen.
+ */
+
+void Player::createSidePot(Game& game) {
+    Pot* curPot = *game.getPots(); 
+    assert(curPot != nullptr);
+    if (curPot->getNextPtr() == nullptr) { // only has mainpot
+        // create new sidepot
+        Pot* newPot = game.createNewPot();
+        curPot->setNextPtr(newPot);
+        newPot->setPrevPtr(curPot);
+        return;
+    }
+    // go to the second last pot
+    while (curPot->getNextPtr() != nullptr) {
+        curPot = curPot->getNextPtr();
+    }
+    curPot = curPot->getPrevPtr();
+
+    int totalCoin = coinBet + coin;
+    if (curPot->getThreshold() < totalCoin) {
+        // go to the last
+         while (curPot->getNextPtr() != nullptr) {
+            curPot = curPot->getNextPtr();
+        }
+        // create new sidepot
+        Pot* newPot = game.createNewPot();
+        curPot->setNextPtr(newPot);
+        newPot->setPrevPtr(curPot);
+        return;
+    }
+}
 
 
 int Player::chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng) {
@@ -425,6 +472,20 @@ int Player::chooseAction(Game& game) {
 
     std::vector<int> validActions;
     std::vector<double> actionWeights;
+
+    // Check if the player can only fold or go all-in
+    if (game.getMaxBetting() >= coin + coinBet) {
+        validActions.push_back(1);  // Fold
+        actionWeights.push_back(1.0);
+        
+        validActions.push_back(6);  // All-in
+        actionWeights.push_back(2.0);
+        
+        // Return the chosen action immediately
+        return chooseWeightedAction(validActions, actionWeights, rng);
+    }
+
+    // more options available
 
     // Determine valid actions and their corresponding weights based on game state
     if (game.getRound() == 1 || game.getHasBet()) {
@@ -451,8 +512,12 @@ int Player::chooseAction(Game& game) {
         actionWeights.push_back(2.0);  // Ensure raise is always available with higher weight
     }
 
+    // Add all-in as an option with a lower weight
+    validActions.push_back(6);
+    actionWeights.push_back(1.0);  // Lower weight for all-in when it's not the only option
+
     if (validActions.empty()) {
-        return 1;  // Default to folding if no valid actions
+        return 1;  // Default to folding if no valid actions (this should never happen now)
     }
 
     // Choose an action based on weighted probabilities
