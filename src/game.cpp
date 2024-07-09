@@ -101,9 +101,9 @@ void Game::sortPlayer(int dealerPosition) {
 void Game::checkGameStat() {
     std::cout << "Game stats:\n";
     std::cout << "playerNumber: " << playerNumber << "\n";
-    std::cout << "totalCoin: " << totalCoin << "\n";
     std::cout << "smallBlind: " << smallBlind << "\n";
     std::cout << "maxBetting: " << maxBetting << "\n";
+    printPotInfo();
     std::cout << "round: " << round << "\n";
     std::cout << "cardLeft: " << cardsLeft.size() << "\n";
     std::cout << "cards On Field: " << cardsOnField.size() << "\n";
@@ -128,6 +128,28 @@ void Game::checkGameStat() {
     }
     std::cout << "total coin: " << total << "\n";
 } /* checkGameStat() */
+
+void Game::printPotInfo() {
+    Pot* curPot = *pots;
+    int index = 0;
+    while (curPot != nullptr) {
+        if (index == 0) {
+            std::cout << "mainpot: \n";
+        }
+        else {
+            std::cout << "sidepot" << index << " \n";
+        }
+        std::cout << "amount: " << curPot->getAmount() << "\n";
+        std::cout << "eligible players: ";
+        std::vector<Player*> players = curPot->getEligiblePlayers();
+        for (Player* player : players) {
+            std::cout << player->getName() << " ";
+        }
+        std::cout << "\n";
+
+        curPot = curPot->getNextPtr();
+    }
+}
 
 
 
@@ -190,12 +212,12 @@ int Game::compareSameHands(const std::vector<std::string>& hand1, const std::vec
  *  if two or more players have the same hands and same cards(numbers).
  */
 
-std::vector<Player*> Game::findWinners() {
+std::vector<Player*> Game::findWinners(Pot* pot) {
     std::vector<Player*> activePlayers;
     std::vector<std::vector<std::string>> bestHands;
 
     // Filter active players and find their best hands
-    for (auto& player : players) {
+    for (auto& player : pot->getEligiblePlayers()) {
         if (!player->getIsFold()) {
             activePlayers.push_back(player);
             bestHands.push_back(player->findBestFiveCardHand(player->makeCompleteHand(getCommunityCards())));
@@ -234,17 +256,20 @@ std::vector<Player*> Game::findWinners() {
 
 /*
  *  distributeCoins() dirstributes winning coins to the winners.
+ *  amount argument is the amount of the current pot
  */
 
-void Game::distributeCoins(std::vector<Player*>& winners) {
+void Game::distributeCoins(std::vector<Player*>& winners, Pot* pot) {
+    int amount = pot->getAmount();
+    assert(amount != 0);
     int numWinners = winners.size();
     if (numWinners == 0) { // if no winners, which is not possible.
         std::cout << "no winner detected. Please check\n";
         return;
     }
 
-    int coinsPerWinner = getTotalCoin() / numWinners;  // Each winner's equal share
-    int remainder = getTotalCoin() % numWinners;       // Remainder if not divisible evenly
+    int coinsPerWinner = amount / numWinners;  // Each winner's equal share
+    int remainder = amount % numWinners;       // Remainder if not divisible evenly
 
     for (int i = 0; i < numWinners; ++i) {
         int additionalCoin = (i < remainder) ? 1 : 0;
@@ -252,6 +277,27 @@ void Game::distributeCoins(std::vector<Player*>& winners) {
         winners[i]->setCoin(winnerCoin);
     }
 } /* distributeCoins() */
+
+void Game::doShowDown() {
+    Pot* curPot = *pots;
+    int index = 0;
+    while (curPot != nullptr) {
+        std::vector<Player*> winners = findWinners(curPot);
+        if (index == 0 ) {
+            std::cout << "Mainpot Winner(s): ";
+        }
+        else {
+            std::cout << "sidePot" << index<< " Winner(s): ";
+        }
+        for (int i = 0; i < winners.size(); ++i) {
+            std::cout << winners[i]->getName() << " ";
+        }
+        std::cout << "\n";
+        distributeCoins(winners, curPot);
+        //update pointer
+        curPot = curPot->getNextPtr();
+    }
+}
 
 /*
  *  resetForNextGame() resets fields 
@@ -266,7 +312,7 @@ void Game::resetForNextGame() {
     setCardsOnField();
     setCommunityCards();
     setCardsLeft(generateDeck());
-    setTotalCoin(0);
+    removeAllPots();
     setHasBet(false);
     setMaxBetting(0);
     setRound(1);
@@ -301,7 +347,7 @@ int requestPlayerNumbers() {
 
 void Game::initializePlayers() {
     std::vector<Player*> players;
-    for (int i = 1; i <= getPlayerNumber() - 1; ++i) {
+    for (int i = 1; i < players.size(); ++i) {
         std::string playerName = "player" + std::to_string(i);
         Player* player = new Player(playerName, 10000);
         players.push_back(player);
@@ -347,8 +393,8 @@ void Game::makeDoneActionFalse() {
  */
 
 bool Game::isPlayerAllDone() {
-    for (int i = 0; i < playerNumber; ++i) {
-        if (!players[i]->getDoneAction() && !players[i]->getIsFold()) {
+    for (Player* player : players) {
+        if (!player->getDoneAction() && !player->getIsFold()) {
             return false;
         }
     }
@@ -402,6 +448,16 @@ Pot* Game::createNewPot() {
     }
 
     return newPot;
+}
+
+void Game::removeAllPots() {
+    Pot* currentPot = *pots;
+    while (currentPot != nullptr) {
+        Pot* nextPot = currentPot->getNextPtr();
+        delete currentPot;
+        currentPot = nextPot;
+    }
+    *pots = nullptr; // head Pointer to null
 }
 
 

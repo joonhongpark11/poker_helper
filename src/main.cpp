@@ -86,13 +86,7 @@ int main() {
             game.setRound(game.getRound() + 1);
         }
         game.checkGameStat();
-        std::vector<Player*> winners = game.findWinners();
-        std::cout << "Winner(s): ";
-        for (int i = 0; i < winners.size(); ++i) {
-            std::cout << winners[i]->getName() << " ";
-        }
-        std::cout << "\n";
-        game.distributeCoins(winners);
+        game.doShowDown();
 
         //update dealerposition
         game.sortPlayer(0);

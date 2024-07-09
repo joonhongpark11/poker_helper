@@ -439,6 +439,8 @@ void Player::createSidePot(Game& game) {
         Pot* newPot = game.createNewPot();
         curPot->setNextPtr(newPot);
         newPot->setPrevPtr(curPot);
+        assert(curPot->getThreshold() == 0);
+        curPot->setThreshold(game.getMaxBetting());
         return;
     }
     // go to the second last pot
@@ -457,6 +459,8 @@ void Player::createSidePot(Game& game) {
         Pot* newPot = game.createNewPot();
         curPot->setNextPtr(newPot);
         newPot->setPrevPtr(curPot);
+        assert(curPot->getThreshold() == 0);
+        curPot->setThreshold(game.getMaxBetting());
         return;
     }
 }
