@@ -68,6 +68,8 @@ You need to do several steps for using google test.<br>
 - 2024/07/07: trying to make sidepots using double linkedlist. It is quite complicated but I have an idea.
 
 - 2024/07/08: getting more and more complicated... need to debug betting. I ignored the raising and other possible options.
+
+- 2024/07/09: I started getting segmentation fault... haha
 </details>
 
 

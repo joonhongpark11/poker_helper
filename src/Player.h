@@ -29,6 +29,7 @@ enum class Hands {
 
 //forward declaration
 class Game;
+struct Pot;
 
 class Player {
 private:
@@ -82,7 +83,7 @@ public:
     Hands evaluateHand(const std::vector<std::string>& completeHand);
 
     // player action functions
-    void putCoin(int amount, Game& game);
+    void putCoin(int amount, Game& game, Pot* pot);
     void betting(int amount, Game& game);
     int chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng);
     int chooseAction(Game& game);

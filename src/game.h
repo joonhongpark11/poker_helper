@@ -32,6 +32,11 @@ private:
     struct Pot* prevPtr;
 
 public:
+    ~Pot() {
+        // Clear the dynamically allocated memory
+        delete nextPtr;
+        delete prevPtr;
+    }
     // Accessors
     int getAmount() const { return amount; }
     int getThreshold() const { return threshold; }
@@ -42,7 +47,11 @@ public:
     // Mutators
     void setAmount(int amt) { amount = amt; }
     void setThreshold(int thresh) { threshold = thresh; }
-    void addPlayer(Player* player) { eligiblePlayers.push_back(player); }
+    void addPlayer(Player* player) { 
+        if (std::find(eligiblePlayers.begin(), eligiblePlayers.end(), player) == eligiblePlayers.end()) {
+            eligiblePlayers.push_back(player);
+        }
+    }
     void setNextPtr(Pot* ptr) { nextPtr = ptr; }
     void setPrevPtr(Pot* ptr) { prevPtr = ptr; }
 } Pot;
@@ -66,7 +75,7 @@ public:
     Game(int players, int smallBlind) : playerNumber(players),
          smallBlind(smallBlind), maxBetting(0), round(1), hasBet(false) {
             initializePlayers();
-            createNewPot();
+            *pots = createNewPot();
          }
 
     //getter and setter

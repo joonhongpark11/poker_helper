@@ -213,6 +213,7 @@ int Game::compareSameHands(const std::vector<std::string>& hand1, const std::vec
  */
 
 std::vector<Player*> Game::findWinners(Pot* pot) {
+    assert(pot != nullptr);
     std::vector<Player*> activePlayers;
     std::vector<std::vector<std::string>> bestHands;
 
@@ -260,6 +261,8 @@ std::vector<Player*> Game::findWinners(Pot* pot) {
  */
 
 void Game::distributeCoins(std::vector<Player*>& winners, Pot* pot) {
+    assert(!winners.empty());
+    assert(pot != nullptr);
     int amount = pot->getAmount();
     assert(amount != 0);
     int numWinners = winners.size();
@@ -280,6 +283,7 @@ void Game::distributeCoins(std::vector<Player*>& winners, Pot* pot) {
 
 void Game::doShowDown() {
     Pot* curPot = *pots;
+    assert(curPot != nullptr);
     int index = 0;
     while (curPot != nullptr) {
         std::vector<Player*> winners = findWinners(curPot);
@@ -346,16 +350,13 @@ int requestPlayerNumbers() {
  */
 
 void Game::initializePlayers() {
-    std::vector<Player*> players;
-    for (int i = 1; i < players.size(); ++i) {
+    for (int i = 1; i < playerNumber; ++i) {
         std::string playerName = "player" + std::to_string(i);
         Player* player = new Player(playerName, 10000);
         players.push_back(player);
     }
     Player* user = new Player("user", 10000);
     players.push_back(user);
-
-    setPlayers(players);
 } /* initializePlayers() */
 
 void Game::freePlayers() {

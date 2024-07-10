@@ -400,28 +400,39 @@ Hands Player::evaluateHand(const std::vector<std::string>& hand) {
 
 void Player::betting(int amount, Game& game) {
     Pot* curPot = *game.getPots();
-    int amount = 0;
+    assert(curPot != nullptr);
     // Add to pot
-    while(1) {
-        if (curPot->getThreshold() == 0) { // last pot
-            amount = game.getMaxBetting() - coinBet;
-            assert(amount > 0);
-            putCoin(amount, game);
-            // done
+    while (1) {
+        // Always positive
+        assert(amount >= 0);
+        // Bet all
+        if (amount == 0) {
             break;
         }
-        else if (coinBet < curPot->getThreshold()) {
-            amount = curPot->getThreshold() - coinBet;
-            assert(amount > 0);
-            putCoin(amount, game);
+        if (curPot->getThreshold() == 0) { // Last pot
+            curPot->addPlayer(this);
+            putCoin(amount, game, curPot);
+            // Done
+            break;
+        } else if (coinBet < curPot->getThreshold()) {
+            int amountToBet = curPot->getThreshold() - coinBet;
+            if (amountToBet > amount) {
+                putCoin(amount, game, curPot);
+                amount = 0; // All amount bet
+            } else {
+                putCoin(amountToBet, game, curPot);
+                amount -= amountToBet;
+            }
+            curPot->addPlayer(this);
         }
         curPot = curPot->getNextPtr();
     }
 } /* betting() */
 
-void Player::putCoin(int amount, Game& game) {
+void Player::putCoin(int amount, Game& game, Pot* pot) {
     setCoinBet(coinBet + amount);
     setCoin(coin - amount);
+    pot->setAmount(pot->getAmount() + amount);
     if (coinBet > game.getMaxBetting()) {
         game.setMaxBetting(coinBet);
     }
@@ -483,7 +494,7 @@ int Player::chooseAction(Game& game) {
         actionWeights.push_back(1.0);
         
         validActions.push_back(6);  // All-in
-        actionWeights.push_back(2.0);
+        actionWeights.push_back(3.0);
         
         // Return the chosen action immediately
         return chooseWeightedAction(validActions, actionWeights, rng);
@@ -518,7 +529,7 @@ int Player::chooseAction(Game& game) {
 
     // Add all-in as an option with a lower weight
     validActions.push_back(6);
-    actionWeights.push_back(1.0);  // Lower weight for all-in when it's not the only option
+    actionWeights.push_back(0.0001);  // Lower weight for all-in when it's not the only option
 
     if (validActions.empty()) {
         return 1;  // Default to folding if no valid actions (this should never happen now)
@@ -532,6 +543,7 @@ int Player::chooseAction(Game& game) {
  *  doAction() runs different actions based on the choice.
  */
 void Player::doAction(int action, Game& game) {
+    std::cout << action << "\n";
     int amountToCall;
     int amountToBet;
     int amountToRaise;
@@ -579,7 +591,12 @@ void Player::doAction(int action, Game& game) {
             game.makeDoneActionFalse();
             setDoneAction(true);
             break;
-        
+        case 6: // all in
+            createSidePot(game); // create sidepot if elegible
+            betting(coin, game); // bet all money
+            std::cout << getName() << ": allin! current max: " << game.getMaxBetting();
+            setIsAllIn(true);
+            break;
         default:
             throw std::invalid_argument("wrong action number. Error thrown");
     }

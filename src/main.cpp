@@ -23,6 +23,8 @@ int main() {
         std::cout << "Here is the List of the player positions.\n";
         game.printPlayerOrder();
 
+        game.checkGameStat();
+
         //small blind
         game.getPlayers()[0]->betting(smallBlind, game);
         //big blind
@@ -68,7 +70,7 @@ int main() {
 
                 // player checking and action
                 Player* currentPlayer = game.getPlayers()[index];
-                if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold()) {
+                if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold() && !currentPlayer->getIsAllIn()) {
                     int action = currentPlayer->chooseAction(game);
                     currentPlayer->doAction(action, game);
                 }
@@ -82,8 +84,11 @@ int main() {
 
             //reset done action
             game.makeDoneActionFalse();
+
+            game.checkGameStat();
             // update round
             game.setRound(game.getRound() + 1);
+
         }
         game.checkGameStat();
         game.doShowDown();
