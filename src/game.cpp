@@ -131,6 +131,10 @@ void Game::checkGameStat() {
 
 void Game::printPotInfo() {
     Pot* curPot = *pots;
+    if (curPot == nullptr) {
+        std::cout << "no pot available\n";
+        return;
+    }
     int index = 0;
     while (curPot != nullptr) {
         if (index == 0) {
@@ -316,7 +320,9 @@ void Game::resetForNextGame() {
     setCardsOnField();
     setCommunityCards();
     setCardsLeft(generateDeck());
+    std::cout << "Debug: before removepot\n";
     removeAllPots();
+    std::cout << "Debug: after removepot\n";
     setHasBet(false);
     setMaxBetting(0);
     setRound(1);
@@ -452,13 +458,21 @@ Pot* Game::createNewPot() {
 }
 
 void Game::removeAllPots() {
+    assert(pots != nullptr);
+    if (*pots == nullptr) {
+        std::cout << "no pots available\n";
+        return;
+    }
+    
     Pot* currentPot = *pots;
     while (currentPot != nullptr) {
         Pot* nextPot = currentPot->getNextPtr();
+        currentPot->setNextPtr(nullptr);  // Prevent cascade deletion
+        currentPot->setPrevPtr(nullptr);
         delete currentPot;
         currentPot = nextPot;
     }
-    *pots = nullptr; // head Pointer to null
+    *pots = nullptr;  // Set the content of pots to nullptr, not pots itself
 }
 
 

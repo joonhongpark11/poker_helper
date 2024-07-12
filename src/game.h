@@ -32,11 +32,6 @@ private:
     struct Pot* prevPtr;
 
 public:
-    ~Pot() {
-        // Clear the dynamically allocated memory
-        delete nextPtr;
-        delete prevPtr;
-    }
     // Accessors
     int getAmount() const { return amount; }
     int getThreshold() const { return threshold; }
@@ -100,7 +95,9 @@ public:
     int getRound() { return round; }
     void setRound(int round) { this->round = round; }
     Pot** getPots() { return pots; }
-    void setPots(Pot** pots) { this->pots = pots; }
+    void setPots() {
+        *pots = createNewPot();
+     }
 
     // game setting functions
     std::vector<std::string> generateDeck();

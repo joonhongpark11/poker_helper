@@ -70,6 +70,8 @@ You need to do several steps for using google test.<br>
 - 2024/07/08: getting more and more complicated... need to debug betting. I ignored the raising and other possible options.
 
 - 2024/07/09: I started getting segmentation fault... haha
+
+- 2024/07/11: fixed segmentation fault issue. I need to fix when player's coin is 0, they cannot participate in the game.
 </details>
 
 
