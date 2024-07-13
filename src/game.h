@@ -125,6 +125,7 @@ public:
     Pot* createNewPot();
     void removeAllPots();
     void doShowDown();
+    void makeNoCoinPlayersOut();
 };
 
 // game process functions

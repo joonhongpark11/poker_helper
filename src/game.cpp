@@ -475,6 +475,15 @@ void Game::removeAllPots() {
     *pots = nullptr;  // Set the content of pots to nullptr, not pots itself
 }
 
+void Game::makeNoCoinPlayersOut() {
+    for (Player* player : players) {
+        if (player->getCoin() == 0) {
+            std::cout << player->getName() << " is out! no money to play!\n";
+            player->setIsOut(true);
+        }
+    }
+}
+
 
 
 /*-------currently not in use ------------*/

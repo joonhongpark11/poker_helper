@@ -427,6 +427,7 @@ void Player::betting(int amount, Game& game) {
         }
         curPot = curPot->getNextPtr();
     }
+    assert(coin >= 0);
 } /* betting() */
 
 void Player::putCoin(int amount, Game& game, Pot* pot) {

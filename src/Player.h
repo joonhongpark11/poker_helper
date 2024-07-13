@@ -40,12 +40,13 @@ private:
     bool isFold;
     bool doneAction;
     bool isAllIn;
+    bool isOut;
 
 
 public:
     // constructor
     Player(const std::string& name, int coin)
-    : name(name), coin(coin), coinBet(0), isFold(false), doneAction(false) {}
+    : name(name), coin(coin), coinBet(0), isFold(false), doneAction(false), isOut(false) {}
 
 
     // Getters and setters
@@ -63,6 +64,9 @@ public:
     void setDoneAction(bool doneAction) { this->doneAction = doneAction; }
     bool getIsAllIn() { return isAllIn; }
     void setIsAllIn(bool isAllIn ) { this->isAllIn = isAllIn; }
+    bool getIsOut() { return isOut; }
+    void setIsOut(bool isOut) { this->isOut = isOut; }
+
 
     // util function in Player
     std::vector<std::string> makeCompleteHand(const std::vector<std::string>& communityCards);

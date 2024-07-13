@@ -32,10 +32,38 @@ int main() {
 
         //small blind
         std::cout << "Debug: small blind\n";
-        game.getPlayers()[0]->betting(smallBlind, game);
-        //big blind
-        std::cout << "Debug: big blind\n";
-        game.getPlayers()[1]->betting(smallBlind * 2, game);
+        int index1 = 0;
+        bool hasPlayer = false;
+
+        while (index1 <= game.getPlayerNumber()) {
+            Player* tempPlayer = game.getPlayers()[index1];
+            if (!tempPlayer->getIsOut()) {
+                tempPlayer->betting(smallBlind, game);
+                hasPlayer = true;
+                break;  // Exit the loop after finding the first player to bet small blind
+            }
+            index1++;
+        }
+
+        if (!hasPlayer) {
+            throw std::runtime_error("No active players found for small blind!!!");
+        }
+
+        int index2 = index1 + 1;
+
+        while (index2 <= game.getPlayerNumber()) {
+            Player* tempPlayer = game.getPlayers()[index2];
+            if (!tempPlayer->getIsOut()) {
+                tempPlayer->betting(smallBlind * 2, game);
+                break;  // Exit the loop after finding the first player to bet big blind
+            }
+            index2++;
+        }
+
+        if (index2 >= game.getPlayerNumber()) {
+            throw std::runtime_error("No active players found for big blind!!!");
+        }
+
 
         // cards setup
         std::cout << "Debug: card setup\n";
@@ -82,7 +110,7 @@ int main() {
 
                 // player checking and action
                 Player* currentPlayer = game.getPlayers()[index];
-                if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold() && !currentPlayer->getIsAllIn()) {
+                if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold() && !currentPlayer->getIsAllIn() && !currentPlayer->getIsOut()) {
                     int action = currentPlayer->chooseAction(game);
                     currentPlayer->doAction(action, game);
                 }
@@ -108,6 +136,7 @@ int main() {
         game.checkGameStat();
         std::cout << "Debug: showdown\n";
         game.doShowDown();
+        game.makeNoCoinPlayersOut();
 
         //update dealerposition
         std::cout << "Debug: sort for next game\n";

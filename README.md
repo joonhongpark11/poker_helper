@@ -72,6 +72,8 @@ You need to do several steps for using google test.<br>
 - 2024/07/09: I started getting segmentation fault... haha
 
 - 2024/07/11: fixed segmentation fault issue. I need to fix when player's coin is 0, they cannot participate in the game.
+
+- 2024/07/12: Fixed issues. Now need to check if the all in actually works and make the user can contribute.
 </details>
 
 
