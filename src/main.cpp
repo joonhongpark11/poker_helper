@@ -111,7 +111,26 @@ int main() {
                 // player checking and action
                 Player* currentPlayer = game.getPlayers()[index];
                 if (!currentPlayer->getDoneAction() && !currentPlayer->getIsFold() && !currentPlayer->getIsAllIn() && !currentPlayer->getIsOut()) {
-                    int action = currentPlayer->chooseAction(game);
+                    int action = -1;
+                    if (currentPlayer->getName() == "user") {
+                        std::vector<int> validActions = currentPlayer->getAvailableOptions(game);
+                        std::cout << "It is your turn\n";
+                        currentPlayer->printActions(validActions);
+                        std::cout << "Which action do you want to do?\n";
+                        while (true) {
+                            std::cin >> action;
+                            if (std::find(validActions.begin(), validActions.end(), action) != validActions.end()) {
+                                break;
+                            } else {
+                                std::cin.clear(); // clear the error flags
+                                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                std::cout << "Invalid action. Please enter a valid action.\n";
+                            }
+                        }
+                    }
+                    else {
+                        action = currentPlayer->chooseAction(game);
+                    }
                     currentPlayer->doAction(action, game);
                 }
 
@@ -131,6 +150,7 @@ int main() {
             // update round
             std::cout << "Debug: update round\n";
             game.setRound(game.getRound() + 1);
+            game.setHasBet(false);
 
         }
         game.checkGameStat();
@@ -156,7 +176,3 @@ int main() {
 
     return 0;
 }
-
-// deal with only one player
-// deal with all in
-// make printing for distribute coins

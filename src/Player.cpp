@@ -540,6 +540,64 @@ int Player::chooseAction(Game& game) {
     return chooseWeightedAction(validActions, actionWeights, rng);
 } /* chooseAction() */
 
+std::vector<int> Player::getAvailableOptions(Game& game) {
+    std::vector<int> validActions;
+
+    // Check if the player can only fold or go all-in
+    if (game.getMaxBetting() >= coin + coinBet) {
+        validActions.push_back(1);  // Fold
+        validActions.push_back(6);  // All-in
+        printActions(validActions);
+        return validActions;
+    }
+
+    // more options available
+
+    // Determine valid actions based on game state
+    if (game.getRound() == 1 || game.getHasBet()) {
+        validActions.push_back(1);  // Fold
+    }
+
+    if (!game.getHasBet()) {
+        validActions.push_back(2);  // Check
+        validActions.push_back(4);  // Bet
+    } else {
+        if (getCoinBet() < game.getMaxBetting()) {
+            validActions.push_back(3);  // Call
+        }
+        validActions.push_back(5);  // Raise
+    }
+
+    if (std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
+        validActions.push_back(5);  // Ensure raise is always available
+    }
+
+    // Add all-in as an option
+    validActions.push_back(6);  // All-in
+
+    // Print the available actions
+    return validActions;
+}
+
+void Player::printActions(const std::vector<int>& actions) {
+    std::cout << "Available actions:\n";
+    for (int action : actions) {
+        std::cout << actionToString(action) << ": " << action << "\n";
+    }
+}
+
+std::string Player::actionToString(int action) {
+    switch(action) {
+        case 1: return "Fold";
+        case 2: return "Check";
+        case 3: return "Call";
+        case 4: return "Bet";
+        case 5: return "Raise";
+        case 6: return "All-in";
+        default: return "Unknown Action";
+    }
+}
+
 /*
  *  doAction() runs different actions based on the choice.
  */

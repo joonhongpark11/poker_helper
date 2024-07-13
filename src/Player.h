@@ -93,6 +93,9 @@ public:
     int chooseAction(Game& game);
     void doAction(int action, Game& game);
     void createSidePot(Game& game);
+    std::vector<int> getAvailableOptions(Game& game);
+    void printActions(const std::vector<int>& actions);
+    std::string actionToString(int action);
 };
 
 // util global functions
