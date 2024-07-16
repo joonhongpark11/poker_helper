@@ -401,34 +401,64 @@ Hands Player::evaluateHand(const std::vector<std::string>& hand) {
 void Player::betting(int amount, Game& game) {
     Pot* curPot = *game.getPots();
     assert(curPot != nullptr);
+    bool allIn = (amount == coin); // Check if the player is going all-in
+
     // Add to pot
     while (1) {
-        // Always positive
         assert(amount >= 0);
-        // Bet all
         if (amount == 0) {
             break;
         }
+
         if (curPot->getThreshold() == 0) { // Last pot
             curPot->addPlayer(this);
             putCoin(amount, game, curPot);
-            // Done
             break;
         } else if (coinBet < curPot->getThreshold()) {
             int amountToBet = curPot->getThreshold() - coinBet;
             if (amountToBet > amount) {
                 putCoin(amount, game, curPot);
-                amount = 0; // All amount bet
+                amount = 0;
             } else {
                 putCoin(amountToBet, game, curPot);
                 amount -= amountToBet;
             }
             curPot->addPlayer(this);
         }
+
+        // Check if we need to create a side pot
+        if (allIn && amount == 0 && game.getMaxBetting() > coinBet) {
+            createSidePot(game);
+        }
+
         curPot = curPot->getNextPtr();
     }
+
+    // Check if we need to create a side pot after betting
+    if (allIn && game.getMaxBetting() > coinBet) {
+        createSidePot(game);
+    }
+
     assert(coin >= 0);
 } /* betting() */
+
+void Player::createSidePot(Game& game) {
+    Pot* curPot = *game.getPots();
+    assert(curPot != nullptr);
+
+    // Go to the last pot
+    while (curPot->getNextPtr() != nullptr) {
+        curPot = curPot->getNextPtr();
+    }
+
+    // Create new sidepot
+    Pot* newPot = game.createNewPot();
+    curPot->setNextPtr(newPot);
+    newPot->setPrevPtr(curPot);
+    curPot->setThreshold(coinBet);  // Set threshold for the current pot
+    newPot->setThreshold(0);        // New side pot has threshold of 0
+    std::cout << "New side pot created. Previous pot threshold: " << coinBet << std::endl;
+}
 
 void Player::putCoin(int amount, Game& game, Pot* pot) {
     setCoinBet(coinBet + amount);
@@ -438,45 +468,6 @@ void Player::putCoin(int amount, Game& game, Pot* pot) {
         game.setMaxBetting(coinBet);
     }
 }
-
-/*
- *  should be used only when all-in is chosen.
- */
-
-void Player::createSidePot(Game& game) {
-    Pot* curPot = *game.getPots(); 
-    assert(curPot != nullptr);
-    if (curPot->getNextPtr() == nullptr) { // only has mainpot
-        // create new sidepot
-        Pot* newPot = game.createNewPot();
-        curPot->setNextPtr(newPot);
-        newPot->setPrevPtr(curPot);
-        assert(curPot->getThreshold() == 0);
-        curPot->setThreshold(game.getMaxBetting());
-        return;
-    }
-    // go to the second last pot
-    while (curPot->getNextPtr() != nullptr) {
-        curPot = curPot->getNextPtr();
-    }
-    curPot = curPot->getPrevPtr();
-
-    int totalCoin = coinBet + coin;
-    if (curPot->getThreshold() < totalCoin) {
-        // go to the last
-         while (curPot->getNextPtr() != nullptr) {
-            curPot = curPot->getNextPtr();
-        }
-        // create new sidepot
-        Pot* newPot = game.createNewPot();
-        curPot->setNextPtr(newPot);
-        newPot->setPrevPtr(curPot);
-        assert(curPot->getThreshold() == 0);
-        curPot->setThreshold(game.getMaxBetting());
-        return;
-    }
-}
-
 
 int Player::chooseWeightedAction(const std::vector<int>& actions, const std::vector<double>& weights, std::mt19937& rng) {
     std::discrete_distribution<int> dist(weights.begin(), weights.end());
@@ -651,9 +642,8 @@ void Player::doAction(int action, Game& game) {
             setDoneAction(true);
             break;
         case 6: // all in
-            createSidePot(game); // create sidepot if elegible
             betting(coin, game); // bet all money
-            std::cout << getName() << ": allin! current max: " << game.getMaxBetting();
+            std::cout << getName() << ": allin! current max: " << game.getMaxBetting() << "\n";
             setIsAllIn(true);
             break;
         default:

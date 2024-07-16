@@ -122,8 +122,10 @@ void Game::checkGameStat() {
         for (auto card : player->getHoleCards()) {
             std::cout << card << " ";
         }
-        std:: cout << ", ";
-        std::cout << "Fold: " << player->getIsFold() << "\n";
+        std::cout << ", ";
+        std::cout << "Fold: " << player->getIsFold() << ", ";
+        std::cout << "AllIn: " << player->getIsAllIn() << ", ";
+        std::cout << "out: " << player->getIsOut() << "\n";
         total += player->getCoin();
     }
     std::cout << "total coin: " << total << "\n";
@@ -152,6 +154,7 @@ void Game::printPotInfo() {
         std::cout << "\n";
 
         curPot = curPot->getNextPtr();
+        index += 1;
     }
 }
 
@@ -223,13 +226,13 @@ std::vector<Player*> Game::findWinners(Pot* pot) {
 
     // Filter active players and find their best hands
     for (auto& player : pot->getEligiblePlayers()) {
-        if (!player->getIsFold()) {
+        if (!player->getIsFold() && !player->getIsOut()) {
             activePlayers.push_back(player);
             bestHands.push_back(player->findBestFiveCardHand(player->makeCompleteHand(getCommunityCards())));
         }
     }
 
-    if (activePlayers.empty()) {
+    if (activePlayers.empty() && (pot->getAmount() != 0)) {
         throw std::runtime_error("No active players found");
     }
 
@@ -316,13 +319,12 @@ void Game::resetForNextGame() {
         player->setCoinBet(0);
         player->setIsFold(false);
         player->setDoneAction(false);
+        player->setIsAllIn(false);
     }
     setCardsOnField();
     setCommunityCards();
     setCardsLeft(generateDeck());
-    std::cout << "Debug: before removepot\n";
     removeAllPots();
-    std::cout << "Debug: after removepot\n";
     setHasBet(false);
     setMaxBetting(0);
     setRound(1);
@@ -401,12 +403,13 @@ void Game::makeDoneActionFalse() {
 
 bool Game::isPlayerAllDone() {
     for (Player* player : players) {
-        if (!player->getDoneAction() && !player->getIsFold()) {
+        if (!player->getDoneAction() && !player->getIsFold() && !player->getIsOut() && !player->getIsAllIn()) {
             return false;
         }
     }
     return true;
-} /* isPlayerAllDone() */
+}
+/* isPlayerAllDone() */
 
 bool Game::isOnlyOnePlayerLeft() {
     int numFold = 0;

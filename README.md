@@ -76,6 +76,8 @@ You need to do several steps for using google test.<br>
 - 2024/07/12: Fixed issues. Now need to check if the all in actually works and make the user can contribute.
 
 - 2024/07/13: made user can play but got some errors.
+
+- 2024/07/14: sidepot and all in issue fixed. But now I have an issue with betting loop. One player checks for multiple times.
 </details>
 
 

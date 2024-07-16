@@ -31,7 +31,6 @@ int main() {
         game.checkGameStat();
 
         //small blind
-        std::cout << "Debug: small blind\n";
         int index1 = 0;
         bool hasPlayer = false;
 
@@ -66,9 +65,7 @@ int main() {
 
 
         // cards setup
-        std::cout << "Debug: card setup\n";
         game.setCardsLeft(game.generateDeck());
-        std::cout << "Debug: holeCards setup\n";
         // setup hole cards
         game.setupHoleCards();
 
@@ -79,7 +76,6 @@ int main() {
                 game.setHasBet(true);
             }
             std::cout << "round: " << game.getRound() << "\n";
-            std::cout << "Debug: community card pick up\n";
             // the flop
             if (game.getRound() == 2) {
                 std::vector<std::string> communityCards;
@@ -98,7 +94,6 @@ int main() {
 
             // betting process
             int index = 2; // after small and big blind
-            std::cout << "Debug:betting started\n";
             while (!game.isPlayerAllDone()) {
                 // update proper index
                 assert(index <= game.getPlayerNumber() - 1);
@@ -140,32 +135,25 @@ int main() {
                     index = 0;
                 }
             }
-            std::cout << "Debug: betting end\n";
 
             //reset done action
-            std::cout << "make done actino false\n";
             game.makeDoneActionFalse();
 
             game.checkGameStat();
             // update round
-            std::cout << "Debug: update round\n";
             game.setRound(game.getRound() + 1);
             game.setHasBet(false);
 
         }
         game.checkGameStat();
-        std::cout << "Debug: showdown\n";
         game.doShowDown();
         game.makeNoCoinPlayersOut();
 
         //update dealerposition
-        std::cout << "Debug: sort for next game\n";
         game.sortPlayer(0);
 
         //game reset
-        std::cout << "Debug: game reset\n";
         game.resetForNextGame();
-        std::cout << "Debug: loop done\n";
     } while(!(game.getPlayers()[0]->getName() == "player1"));
 
     game.checkGameStat();
