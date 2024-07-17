@@ -78,6 +78,8 @@ You need to do several steps for using google test.<br>
 - 2024/07/13: made user can play but got some errors.
 
 - 2024/07/14: sidepot and all in issue fixed. But now I have an issue with betting loop. One player checks for multiple times.
+
+- 2024/07/14: seems working well but I need to delay some printing so that I can actually see what is going on.
 </details>
 
 

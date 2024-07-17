@@ -480,56 +480,51 @@ int Player::chooseAction(Game& game) {
     std::vector<int> validActions;
     std::vector<double> actionWeights;
 
-    // Check if the player can only fold or go all-in
+    // Check if the player can only fold or go all-in due to insufficient coins
     if (game.getMaxBetting() >= coin + coinBet) {
         validActions.push_back(1);  // Fold
         actionWeights.push_back(1.0);
         
         validActions.push_back(6);  // All-in
-        actionWeights.push_back(3.0);
+        actionWeights.push_back(1.0);
         
         // Return the chosen action immediately
         return chooseWeightedAction(validActions, actionWeights, rng);
     }
 
-    // more options available
-
     // Determine valid actions and their corresponding weights based on game state
     if (game.getRound() == 1 || game.getHasBet()) {
-        validActions.push_back(1);
-        actionWeights.push_back(1.0);  // Lower weight for fold
+        validActions.push_back(1);  // Fold
+        actionWeights.push_back(1.0);  // Fold may be less desirable but always an option
     }
-    
+
     if (!game.getHasBet()) {
-        validActions.push_back(2);
-        actionWeights.push_back(4.0);  // Higher weight for check
-        validActions.push_back(4);
-        actionWeights.push_back(2.0);  // Higher weight for bet
+        validActions.push_back(2);  // Check
+        actionWeights.push_back(4.0);  // Higher weight for check if it's an option
+        validActions.push_back(4);  // Bet
+        actionWeights.push_back(2.0);  // Standard option to initiate a bet
     } else {
         if (getCoinBet() < game.getMaxBetting()) {
-            validActions.push_back(3);
-            actionWeights.push_back(3.0);  // Higher weight for call
+            validActions.push_back(3);  // Call
+            actionWeights.push_back(3.0);  // Call to match the current highest bet
         }
-        validActions.push_back(5);
-        actionWeights.push_back(2.0);  // Higher weight for raise
+        validActions.push_back(5);  // Raise
+        actionWeights.push_back(2.0);  // Engage competitively with a raise
     }
 
-    if (std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
-        validActions.push_back(5);
-        actionWeights.push_back(2.0);  // Ensure raise is always available with higher weight
+    // Ensure "raise" is correctly managed based on other actions
+    if (game.getHasBet() && std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
+        validActions.push_back(5);  // Ensure raise is always available when there are bets
+        actionWeights.push_back(2.0);
     }
 
-    // Add all-in as an option with a lower weight
-    validActions.push_back(6);
-    actionWeights.push_back(0.0001);  // Lower weight for all-in when it's not the only option
+    // All-in is an option but less likely if not forced
+    validActions.push_back(6);  // All-in
+    actionWeights.push_back(0.05);  // Moderately low weight for all-in unless essential
 
-    if (validActions.empty()) {
-        return 1;  // Default to folding if no valid actions (this should never happen now)
-    }
-
-    // Choose an action based on weighted probabilities
+    // Return the chosen action using weighted probabilities
     return chooseWeightedAction(validActions, actionWeights, rng);
-} /* chooseAction() */
+}
 
 std::vector<int> Player::getAvailableOptions(Game& game) {
     std::vector<int> validActions;
@@ -538,11 +533,8 @@ std::vector<int> Player::getAvailableOptions(Game& game) {
     if (game.getMaxBetting() >= coin + coinBet) {
         validActions.push_back(1);  // Fold
         validActions.push_back(6);  // All-in
-        printActions(validActions);
         return validActions;
     }
-
-    // more options available
 
     // Determine valid actions based on game state
     if (game.getRound() == 1 || game.getHasBet()) {
@@ -559,16 +551,17 @@ std::vector<int> Player::getAvailableOptions(Game& game) {
         validActions.push_back(5);  // Raise
     }
 
-    if (std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
-        validActions.push_back(5);  // Ensure raise is always available
+    // Ensure raise is always available, but only when applicable
+    if (game.getHasBet() && std::find(validActions.begin(), validActions.end(), 5) == validActions.end()) {
+        validActions.push_back(5);  // Raise
     }
 
-    // Add all-in as an option
+    // Add all-in as an option regardless of other conditions
     validActions.push_back(6);  // All-in
 
-    // Print the available actions
     return validActions;
 }
+
 
 void Player::printActions(const std::vector<int>& actions) {
     std::cout << "Available actions:\n";
