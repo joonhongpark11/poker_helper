@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+
+\begin{document}
+
+\title{Poker Hand Probabilities (7 out of 52 cards)}
+\author{}
+\date{}
+\maketitle
+
+\section*{Probabilities for Each Hand (7 out of 52 cards)}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Hand} & \textbf{Number of Cases} & \textbf{Probability (\%)} & \textbf{Odds} \\
+\hline
+Royal Flush & 4324 & 0.003232062 & 30939:1 \\
+\hline
+Straight Flush & 37260 & 0.027850748 & 3589.57:1 \\
+\hline
+Four-of-a-kind & 224848 & 0.168067227 & 594:1 \\
+\hline
+Full House & 3473184 & 2.596102271 & 37.52:1 \\
+\hline
+Flush & 4047644 & 3.025494123 & 32.05:1 \\
+\hline
+Straight & 6180020 & 4.619382087 & 20.65:1 \\
+\hline
+Three-of-a-kind & 6461620 & 4.829869755 & 19.7:1 \\
+\hline
+Two pair & 31433400 & 23.49553641 & 3.26:1 \\
+\hline
+Pair & 58627800 & 43.82254574 & 1.28:1 \\
+\hline
+High card & 23294460 & 17.41191958 & 4.74:1 \\
+\hline
+\end{tabular}
+\caption{Probabilities for each hand in a 7-card poker game}
+\end{table}
+
+\section*{Total Number of Cases}
+The total number of possible 7-card hands from a 52-card deck is given by the combination formula:
+\[
+C(52, 7) = \frac{52!}{7!(52-7)!} = 133,784,560
+\]
+
+\section*{Probability Calculations}
+\subsection*{Royal Flush}
+There are four ways to get a Royal Flush (one for each suit):
+\[
+4 \times C(47, 2) = 4 \times \frac{47!}{2!(47-2)!} = 4 \times 1081 = 4324
+\]
+Probability:
+\[
+P(\text{Royal Flush}) = \frac{4324}{133,784,560} \approx 0.003232062\% \quad \text{or} \quad \text{Odds: 30939:1}
+\]
+
+\subsection*{Straight Flush}
+The number of ways to get a Straight Flush:
+\[
+36 \times C(47, 2) = 36 \times 1081 = 38,916
+\]
+Probability:
+\[
+P(\text{Straight Flush}) = \frac{38,916}{133,784,560} \approx 0.027850748\% \quad \text{or} \quad \text{Odds: 3589.57:1}
+\]
+
+% Continue similar calculations for other hands...
+
+\end{document}
