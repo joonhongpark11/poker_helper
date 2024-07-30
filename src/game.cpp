@@ -99,13 +99,14 @@ void Game::sortPlayer(int dealerPosition) {
  *  mostly for debugging.
  */
 void Game::checkGameStat() {
+    std::cout << "--------------------------------------------\n";
     std::cout << "Game stats:\n";
-    std::cout << "playerNumber: " << playerNumber << "\n";
-    std::cout << "smallBlind: " << smallBlind << "\n";
+    std::cout << "playerNumber: " << playerNumber << ", ";
+    std::cout << "smallBlind: " << smallBlind << ", ";
     std::cout << "maxBetting: " << maxBetting << "\n";
     printPotInfo();
-    std::cout << "round: " << round << "\n";
-    std::cout << "cardLeft: " << cardsLeft.size() << "\n";
+    std::cout << "round: " << round << ", ";
+    std::cout << "cardLeft: " << cardsLeft.size() << ", ";
     std::cout << "cards On Field: " << cardsOnField.size() << "\n";
     std::cout << "community cards: ";
     for (std::string card : communityCards) {
@@ -123,12 +124,14 @@ void Game::checkGameStat() {
             std::cout << card << " ";
         }
         std::cout << ", ";
+        std::cout << "DoneAction: " << player->getDoneAction() << ", ";
         std::cout << "Fold: " << player->getIsFold() << ", ";
         std::cout << "AllIn: " << player->getIsAllIn() << ", ";
         std::cout << "out: " << player->getIsOut() << "\n";
         total += player->getCoin();
     }
     std::cout << "total coin: " << total << "\n";
+    std::cout << "--------------------------------------------\n";
 } /* checkGameStat() */
 
 void Game::printPotInfo() {
@@ -145,7 +148,7 @@ void Game::printPotInfo() {
         else {
             std::cout << "sidepot" << index << " \n";
         }
-        std::cout << "amount: " << curPot->getAmount() << "\n";
+        std::cout << "amount: " << curPot->getAmount() << ", ";
         std::cout << "eligible players: ";
         std::vector<Player*> players = curPot->getEligiblePlayers();
         for (Player* player : players) {
@@ -308,6 +311,8 @@ void Game::doShowDown() {
         //update pointer
         curPot = curPot->getNextPtr();
     }
+    std::cout << "--------------------------------------------\n";
+    
 }
 
 /*
@@ -340,6 +345,7 @@ int requestPlayerNumbers() {
     int playerNum;
     while (1) {
         std::cout << PLAYER_INPUT;
+        std::cout << "> ";
         if ((std::cin >> playerNum) && (playerNum <= MAX_PLAYER && playerNum >= MIN_PLAYER)) {
             std::cout << "Got it! I will make a game with " << playerNum << " other players!\n";
             break;

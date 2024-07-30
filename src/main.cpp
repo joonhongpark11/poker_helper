@@ -1,11 +1,14 @@
 #include "Player.h"
 #include "Game.h"
 
+#include<unistd.h> 
+
 
 
 int main() {
     // greeting
     std::cout << GREETING;
+    sleep(1);
 
     // playerNumber request (doesn't include user)
     int playerNumber = requestPlayerNumbers();
@@ -25,10 +28,14 @@ int main() {
             game.setPots();
         }
         std::cout << "Dealer Position is " << game.getPlayers()[game.getPlayerNumber() - 1]->getName() << "\n";
+        usleep(500000);
         std::cout << "Here is the List of the player positions.\n";
+        usleep(500000);
         game.printPlayerOrder();
+        sleep(1);
 
         game.checkGameStat();
+        sleep(2);
 
         //small blind
         int index1 = 0;
@@ -39,6 +46,7 @@ int main() {
             if (!tempPlayer->getIsOut()) {
                 tempPlayer->betting(smallBlind, game);
                 hasPlayer = true;
+                std::cout << tempPlayer->getName() << ": small blind: " << smallBlind << "\n";
                 break;  // Exit the loop after finding the first player to bet small blind
             }
             index1++;
@@ -54,6 +62,7 @@ int main() {
             Player* tempPlayer = game.getPlayers()[index2];
             if (!tempPlayer->getIsOut()) {
                 tempPlayer->betting(smallBlind * 2, game);
+                std::cout << tempPlayer->getName() << ": big blind: " << smallBlind * 2 << "\n";
                 break;  // Exit the loop after finding the first player to bet big blind
             }
             index2++;
@@ -75,6 +84,7 @@ int main() {
             if (game.getRound() == 1) {
                 game.setHasBet(true);
             }
+            std::cout << "--------------------------------------------\n";
             std::cout << "round: " << game.getRound() << "\n";
             // the flop
             if (game.getRound() == 2) {
@@ -109,9 +119,10 @@ int main() {
                     int action = -1;
                     if (currentPlayer->getName() == "user") {
                         std::vector<int> validActions = currentPlayer->getAvailableOptions(game);
+                        std::cout << "--------------------------------------------\n";
                         std::cout << "It is your turn\n";
                         currentPlayer->printActions(validActions);
-                        std::cout << "Which action do you want to do?\n";
+                        std::cout << "Which action do you want to do?\n>";
                         while (true) {
                             std::cin >> action;
                             if (std::find(validActions.begin(), validActions.end(), action) != validActions.end()) {
@@ -122,6 +133,7 @@ int main() {
                                 std::cout << "Invalid action. Please enter a valid action.\n";
                             }
                         }
+                        std::cout << "--------------------------------------------\n";
                     }
                     else {
                         action = currentPlayer->chooseAction(game);
@@ -135,11 +147,9 @@ int main() {
                     index = 0;
                 }
             }
-
+            game.checkGameStat();
             //reset done action
             game.makeDoneActionFalse();
-
-            game.checkGameStat();
             // update round
             game.setRound(game.getRound() + 1);
             game.setHasBet(false);

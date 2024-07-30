@@ -406,6 +406,7 @@ void Player::betting(int amount, Game& game) {
     // Add to pot
     while (1) {
         assert(amount >= 0);
+        // distributed all amount
         if (amount == 0) {
             break;
         }
@@ -455,6 +456,7 @@ void Player::createSidePot(Game& game) {
     Pot* newPot = game.createNewPot();
     curPot->setNextPtr(newPot);
     newPot->setPrevPtr(curPot);
+    std::cout << coinBet;
     curPot->setThreshold(coinBet);  // Set threshold for the current pot
     newPot->setThreshold(0);        // New side pot has threshold of 0
     std::cout << "New side pot created. Previous pot threshold: " << coinBet << std::endl;
@@ -586,7 +588,6 @@ std::string Player::actionToString(int action) {
  *  doAction() runs different actions based on the choice.
  */
 void Player::doAction(int action, Game& game) {
-    std::cout << action << "\n";
     int amountToCall;
     int amountToBet;
     int amountToRaise;
@@ -638,6 +639,7 @@ void Player::doAction(int action, Game& game) {
             betting(coin, game); // bet all money
             std::cout << getName() << ": allin! current max: " << game.getMaxBetting() << "\n";
             setIsAllIn(true);
+            game.makeDoneActionFalse();
             break;
         default:
             throw std::invalid_argument("wrong action number. Error thrown");
